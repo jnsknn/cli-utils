@@ -1,8 +1,9 @@
 package fi.jonne.javacliutils.ui;
 
+import fi.jonne.javacliutils.bots.IRCBot;
 import fi.jonne.javacliutils.commands.Command;
 
-public class JavaCLIUtils {
+public class JavaCLIUtilsMain {
 	
 	public static String input;
 	
@@ -18,7 +19,12 @@ public class JavaCLIUtils {
 	private static void handleInput(){
 		
 		if(!input.startsWith("!")){
-			return;
+			try{
+				IRCBot bot = IRCBot.getInstance();
+				bot.sendMessage(bot.getChannels()[0], input);
+			}catch(Exception e){
+				System.err.println("handleInput() error: " + e.getMessage());
+			}
 		}
 		
 		input = input.substring(1);

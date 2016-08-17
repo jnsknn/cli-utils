@@ -1,5 +1,6 @@
 package fi.jonne.javacliutils.commands;
 
+import fi.jonne.javacliutils.bots.IRCBot;
 import fi.jonne.javacliutils.calculators.Calculator;
 import fi.jonne.javacliutils.generators.UfoName;
 
@@ -34,6 +35,18 @@ public class Command {
 			case EXIT:
 				this.output = "bye!";
 				System.exit(0);
+				break;
+			case IRC:
+				IRCBot.getInstance().setBotName(args[1]);
+				IRCBot bot = IRCBot.getInstance();
+				try{
+					bot.setEncoding("UTF-8");
+					bot.setVerbose(true);
+					bot.connect(args[2]);
+					bot.joinChannel(args[3]);
+				}catch(Exception e){
+					System.err.println("executeCommand(): " + e.getMessage());
+				}
 				break;
 			default:
 				this.output = "";

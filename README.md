@@ -4,8 +4,8 @@ Java Maven project where I try to do and learn different things with Java. The m
 
 # Commands
 
-- !calculate <arg> calculates result from given string using JavaScript engine
+- !calculate calculates result from given string using JavaScript engine
 
-- !ufoname <arg...arg> creates weird name based on given strings
+- !ufoname creates weird name based on given strings
 
 - !exit quits the main program
