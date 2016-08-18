@@ -30,25 +30,30 @@ public class IRCBot extends PircBot{
 		
 		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
 		
-		if(message.startsWith("?")){
-			
-			message = message.substring(1);
-			String[] args = message.split(" ");
-			
-			Command cmd = new Command();
-			
-			cmd.executeCommand(args);
-			sendMessage(channel, cmd.getOutput());
-		}else if(message.split(":")[1].trim().startsWith("?")){
-			
-			message = message.split(":")[1].trim().substring(1);
-			String[] args = message.split(" ");
-			
-			Command cmd = new Command();
-			
-			cmd.executeCommand(args);
-			sendMessage(channel, cmd.getOutput());
-		}
+			if(message.startsWith("?")){
+				
+				message = message.substring(1);
+				String[] args = message.split(" ");
+				
+				Command cmd = new Command();
+				
+				cmd.executeCommand(args);
+				
+				if(cmd.getOutput() != null)
+					sendMessage(channel, cmd.getOutput());
+				
+			}else if(message.split(":")[1].trim().startsWith("?")){
+				
+				message = message.split(":")[1].trim().substring(1);
+				String[] args = message.split(" ");
+				
+				Command cmd = new Command();
+				
+				cmd.executeCommand(args);
+				
+				if(cmd.getOutput() != null)
+					sendMessage(channel, cmd.getOutput());
+			}
 	}
 	
 	public void setBotName(String botName){
