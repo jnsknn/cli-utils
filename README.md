@@ -4,8 +4,12 @@ Java Maven project where I try to do and learn different things with Java. The m
 
 # Commands
 
-- !calculate calculates result from given string using JavaScript engine
+All commands except ?exit takes arguments. Argument are separated with space.
 
-- !ufoname creates weird name based on given strings
+- ?calculate [arg] calculates result from given string using JavaScript engine
 
-- !exit quits the main program
+- ?ufoname [arg...arg] creates weird name based on given strings
+
+- ?irc [arg(BotName) arg(server) arg(#Channel)] connects to irc
+
+- ?exit disconnects irc and quits the main program
