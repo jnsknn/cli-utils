@@ -2,36 +2,37 @@ package fi.jonne.javacliutils.ui;
 
 import fi.jonne.javacliutils.bots.IRCBot;
 import fi.jonne.javacliutils.commands.Command;
+import fi.jonne.javacliutils.commands.ECommands;
 
 public class JavaCLIUtilsMain {
-	
-	public static String input;
 	
 	public static void main(String[] args) {
 		
 		while(true){
-			input = System.console().readLine();
-			handleInput();
+			handleInput(System.console().readLine());
 		}
 		
 	}
 	
-	private static void handleInput(){
+	private static void handleInput(String input){
 		
-		if(!input.startsWith("!")){
+		if(input.startsWith("?")){
+			input = input.substring(1);
+			String[] args = input.split(" ");
+			
+			Command cmd = new Command();
+			
+			cmd.executeCommand(args);
+			
+		}else if(input.startsWith("#")){
+			String[] args = input.split(" ");
+			
 			try{
 				IRCBot bot = IRCBot.getInstance();
-				bot.sendMessage(bot.getChannels()[0], input);
+				bot.sendMessage(args[0], ECommands.IRC.getInputStringFromArgs(args));
 			}catch(Exception e){
 				System.err.println("handleInput() error: " + e.getMessage());
 			}
 		}
-		
-		input = input.substring(1);
-		
-		String[] args = input.split(" ");
-		
-		Command.getInstance().executeCommand(args);
-		
 	}
 }

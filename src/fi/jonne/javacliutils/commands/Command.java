@@ -6,20 +6,11 @@ import fi.jonne.javacliutils.generators.UfoName;
 
 public class Command {
 	
-	private static Command instance;
 	private ECommands eCommand;
 	private String input;
 	private String output;
 	
 	public Command(){
-	}
-	
-	public static Command getInstance(){
-		if(instance == null){
-			instance = new Command();
-		}
-		
-		return instance;
 	}
 	
 	public void executeCommand(String[] args){
@@ -33,26 +24,39 @@ public class Command {
 				this.output = new UfoName(this.input).name;
 				break;
 			case EXIT:
-				this.output = "bye!";
+				IRCBot.getInstance().disconnect();
 				System.exit(0);
 				break;
 			case IRC:
 				IRCBot.getInstance().setBotName(args[1]);
 				IRCBot bot = IRCBot.getInstance();
 				try{
-					bot.setEncoding("UTF-8");
 					bot.setVerbose(true);
+					bot.setEncoding("UTF-8");
+					System.out.println("Connecting to " + args[2] + "...");
+					
 					bot.connect(args[2]);
+					
+					System.out.println("[OK]");
+					System.out.println("Joining channel " + args[3] + "...");
 					bot.joinChannel(args[3]);
+					System.out.println("[OK]");
+					
+					if(bot.isConnected()){
+						bot.setVerbose(false);
+					}
+					
 				}catch(Exception e){
-					System.err.println("executeCommand(): " + e.getMessage());
+					System.err.println("[IRC ERROR]" + e.getMessage());
 				}
 				break;
 			default:
 				this.output = "";
 			}
 			
-			printOutput();
+			if(!IRCBot.getInstance().isConnected()){
+				printOutput();
+			}
 		}
 	}
 	
@@ -68,6 +72,10 @@ public class Command {
 		
 		return false;
 		
+	}
+	
+	public String getOutput(){
+		return this.output;
 	}
 	
 	private void printOutput(){

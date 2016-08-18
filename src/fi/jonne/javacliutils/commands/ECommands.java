@@ -3,7 +3,7 @@ package fi.jonne.javacliutils.commands;
 public enum ECommands {
 	CALCULATE {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("calc")){
+			if(args[0].toLowerCase().startsWith("calc") && args.length == 2){
 				return true;
 			}
 			return false;
@@ -20,7 +20,7 @@ public enum ECommands {
 	},
 	UFONAME {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("ufo")){
+			if(args[0].toLowerCase().startsWith("ufo") && args.length >= 2){
 				return true;
 			}
 			return false;
@@ -54,7 +54,7 @@ public enum ECommands {
 	},
 	IRC {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("irc")){
+			if(args[0].toLowerCase().startsWith("irc") && args.length == 4){
 				return true;
 			}
 			return false;

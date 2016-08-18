@@ -1,6 +1,11 @@
 package fi.jonne.javacliutils.bots;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.jibble.pircbot.PircBot;
+
+import fi.jonne.javacliutils.commands.Command;
 
 public class IRCBot extends PircBot{
 	
@@ -19,9 +24,30 @@ public class IRCBot extends PircBot{
 	public void onMessage(String channel, String sender,
             String login, String hostname, String message) {
 		
-		if (message.equalsIgnoreCase("time")) {
-			String time = new java.util.Date().toString();
-			sendMessage(channel, sender + ": The time is now " + time);
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		String timeStamp = sdf.format(date);
+		
+		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
+		
+		if(message.startsWith("?")){
+			
+			message = message.substring(1);
+			String[] args = message.split(" ");
+			
+			Command cmd = new Command();
+			
+			cmd.executeCommand(args);
+			sendMessage(channel, cmd.getOutput());
+		}else if(message.split(":")[1].trim().startsWith("?")){
+			
+			message = message.split(":")[1].trim().substring(1);
+			String[] args = message.split(" ");
+			
+			Command cmd = new Command();
+			
+			cmd.executeCommand(args);
+			sendMessage(channel, cmd.getOutput());
 		}
 	}
 	

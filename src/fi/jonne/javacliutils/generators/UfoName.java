@@ -5,7 +5,7 @@ import java.util.Random;
 public class UfoName {
 	
 	// Arrays containing vowels and consonants
-	private final static char[] vowels = {'a','e','i','o','u','y','ä','ö','å'};
+	private final static char[] vowels = {'a','e','i','o','u','y'};
     private final static char[] consonants = {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','z'};
     
     // Newly created name will go to this variable
@@ -106,9 +106,6 @@ public class UfoName {
     	String fixedname;
     	
     	fixedname = name.replace("kc", "ck");
-    	fixedname = name.replace("ö", "o");
-    	fixedname = name.replace("ä", "a");
-    	fixedname = name.replace("å", "o");
     	
     	this.name = fixedname;
     }
