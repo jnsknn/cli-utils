@@ -4,7 +4,7 @@ Java Maven project where I try to do and learn different things with Java. The m
 
 # Commands
 
-All commands except ?exit takes arguments. Argument are separated with space.
+All commands except ?exit takes arguments. Arguments are separated with space.
 
 - ?calculate [arg] calculates result from given string using JavaScript engine
 
