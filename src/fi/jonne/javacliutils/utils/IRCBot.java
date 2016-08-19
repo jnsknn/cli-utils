@@ -9,7 +9,7 @@ import fi.jonne.javacliutils.commands.Command;
 
 public class IRCBot extends PircBot{
 	
-	static IRCBot instance;
+	private static IRCBot instance;
 	
 	public IRCBot(){
 	}
@@ -37,6 +37,8 @@ public class IRCBot extends PircBot{
 				
 				Command cmd = new Command();
 				
+				cmd.setSender(sender);
+				cmd.setChannel(channel);
 				cmd.executeCommand(args);
 				
 				if(cmd.getOutput() != null)
@@ -49,6 +51,8 @@ public class IRCBot extends PircBot{
 				
 				Command cmd = new Command();
 				
+				cmd.setSender(sender);
+				cmd.setChannel(channel);
 				cmd.executeCommand(args);
 				
 				if(cmd.getOutput() != null)

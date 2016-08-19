@@ -71,7 +71,7 @@ public enum ECommands {
 	},
 	TIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("irc") && args.length == 3){
+			if(args[0].toLowerCase().startsWith("timer") && (args.length == 5 || args.length == 3)){
 				return true;
 			}
 			return false;

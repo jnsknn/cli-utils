@@ -2,6 +2,8 @@ package fi.jonne.javacliutils.commands;
 
 import fi.jonne.javacliutils.utils.Calculator;
 import fi.jonne.javacliutils.utils.IRCBot;
+import fi.jonne.javacliutils.utils.TimerContainer;
+import fi.jonne.javacliutils.utils.TimerInfo;
 import fi.jonne.javacliutils.utils.UfoName;
 
 public class Command {
@@ -9,8 +11,13 @@ public class Command {
 	private ECommands eCommand;
 	private String input;
 	private String output;
+	private static IRCBot bot;
+	
+	private String sender;
+	private String channel;
 	
 	public Command(){
+		bot = IRCBot.getInstance();
 	}
 	
 	public void executeCommand(String[] args){
@@ -28,8 +35,7 @@ public class Command {
 				System.exit(0);
 				break;
 			case IRC:
-				IRCBot.getInstance().setBotName(args[1]);
-				IRCBot bot = IRCBot.getInstance();
+				bot.setBotName(args[1]);
 				try{
 					bot.setVerbose(true);
 					bot.setEncoding("UTF-8");
@@ -51,12 +57,17 @@ public class Command {
 				}
 				break;
 			case TIMER:
+					if(!bot.isConnected()){
+						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], args[2]));						
+					}else{
+						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], args[2], this.sender, this.channel));	
+					}
 				break;
 			default:
 				this.output = "";
 			}
 			
-			if(!IRCBot.getInstance().isConnected()){
+			if(!bot.isConnected() && this.output != null){
 				printOutput();
 			}
 		}
@@ -80,7 +91,27 @@ public class Command {
 		return this.output;
 	}
 	
+	public void setOutput(String output){
+		this.output = output;
+	};
+	
 	private void printOutput(){
 		System.out.println(this.output);
+	}
+	
+	public void setSender(String sender){
+		this.sender = sender;
+	}
+	
+	public String getSender(){
+		return this.sender;
+	}
+	
+	public void setChannel(String channel){
+		this.channel = channel;
+	}
+	
+	public String getChannel(){
+		return this.channel;
 	}
 }
