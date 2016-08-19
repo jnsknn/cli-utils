@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.generators;
+package fi.jonne.javacliutils.utils;
 
 import java.util.Random;
 

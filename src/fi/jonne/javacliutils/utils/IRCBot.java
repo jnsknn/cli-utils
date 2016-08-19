@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.bots;
+package fi.jonne.javacliutils.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

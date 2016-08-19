@@ -1,8 +1,8 @@
 package fi.jonne.javacliutils.commands;
 
-import fi.jonne.javacliutils.bots.IRCBot;
-import fi.jonne.javacliutils.calculators.Calculator;
-import fi.jonne.javacliutils.generators.UfoName;
+import fi.jonne.javacliutils.utils.Calculator;
+import fi.jonne.javacliutils.utils.IRCBot;
+import fi.jonne.javacliutils.utils.UfoName;
 
 public class Command {
 	
@@ -49,6 +49,8 @@ public class Command {
 				}catch(Exception e){
 					System.err.println("[IRC ERROR]" + e.getMessage());
 				}
+				break;
+			case TIMER:
 				break;
 			default:
 				this.output = "";

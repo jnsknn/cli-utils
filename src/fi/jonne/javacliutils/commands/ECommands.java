@@ -68,6 +68,23 @@ public enum ECommands {
 			
 			return inputString;
 		}
+	},
+	TIMER {
+		public boolean isCommand(String[] args){
+			if(args[0].toLowerCase().startsWith("irc") && args.length == 3){
+				return true;
+			}
+			return false;
+		}
+		public String getInputStringFromArgs(String[] args){
+			String inputString = "";
+			
+			for(int i = 1; i < args.length; i++){
+				inputString += args[i]+" ";
+			}
+			
+			return inputString;
+		}
 	};
 	
 	public abstract boolean isCommand(String[] args);

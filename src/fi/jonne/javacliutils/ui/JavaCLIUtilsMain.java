@@ -1,8 +1,8 @@
 package fi.jonne.javacliutils.ui;
 
-import fi.jonne.javacliutils.bots.IRCBot;
 import fi.jonne.javacliutils.commands.Command;
 import fi.jonne.javacliutils.commands.ECommands;
+import fi.jonne.javacliutils.utils.IRCBot;
 
 public class JavaCLIUtilsMain {
 	
