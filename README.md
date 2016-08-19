@@ -13,3 +13,7 @@ All commands except ?exit takes arguments. Arguments are separated with space.
 - ?irc [arg(BotName) arg(server) arg(#Channel)] connects to irc
 
 - ?exit disconnects irc and quits the main program
+
+# Dependencies
+
+- PircBot http://www.jibble.org/pircbot.php
