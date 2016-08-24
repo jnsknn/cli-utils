@@ -1,5 +1,7 @@
 package fi.jonne.javacliutils.commands;
 
+import java.util.Map;
+
 import fi.jonne.javacliutils.utils.Calculator;
 import fi.jonne.javacliutils.utils.IRCBot;
 import fi.jonne.javacliutils.utils.TimerContainer;
@@ -57,11 +59,19 @@ public class Command {
 				}
 				break;
 			case TIMER:
+				if(args.length > 1){
 					if(!bot.isConnected()){
 						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input));						
 					}else{
 						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input, this.sender, this.channel));	
+					}					
+				}else if(!bot.isConnected()){
+					for(Map.Entry<Integer, TimerInfo> timer : TimerContainer.getInstance().getTimers().entrySet()){
+//					    System.out.printf("Key : %s and Value: %s %n", timer.getKey(), timer.getValue().name);
 					}
+				}else{
+					
+				}
 				break;
 			default:
 				this.output = "";

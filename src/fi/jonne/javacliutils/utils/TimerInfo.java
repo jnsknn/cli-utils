@@ -1,21 +1,28 @@
 package fi.jonne.javacliutils.utils;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimerInfo extends TimerTask{
 	
-	private static final long PERIOD = 1000;
-	private static final long DELAY = 0;
+	public static final long PERIOD = 1000;
+	public static final long DELAY = 0;
+	public static final HashMap<String, Integer> timeMultipliers = new HashMap<String, Integer>(){
+		private static final long serialVersionUID = 1L;{
+		put("h", 3600000);
+		put("m", 60000);
+		put("s", 1000);
+	}};
 	
-	private String name;
-	private String owner;
-	private String channel;
-	private long time;
+	public String name;
+	public String owner;
+	public String channel;
+	public long time;
 	private Timer timer;
 	private TimerTask timerTask;
 	private static IRCBot bot;
-	private int id;
+	public int id;
 	
 	public TimerInfo(String timerTime, String timerName, String timerOwner, String timerChannel){
 		
@@ -33,7 +40,7 @@ public class TimerInfo extends TimerTask{
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			
-			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has been set");
+			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has been set for [" + timerTime + "]!");
 		}
 	}
 	
@@ -51,31 +58,55 @@ public class TimerInfo extends TimerTask{
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			
-			System.out.println("Your timer [" + this.name + "] has been set");
+			System.out.println("Your timer [" + this.name + "] has been set for [" + timerTime + "]!");
 		}
 	}
 
 	private boolean parseTimeFromTimerString(String timerTime){
 		try{
-			char multiplier = timerTime.toLowerCase().charAt(timerTime.length()-1);
-			timerTime = timerTime.substring(0, timerTime.length()-1);
 			
-			int value = Integer.valueOf(timerTime);
+			final int strLength = timerTime.length();
+			int hours = 0, minutes = 0, seconds = 0;
+			char hms;
+			String timerTimeTemp = timerTime;
 			
-			switch(multiplier){
-			case 's':
-				this.time = value * 1000;
-				break;
-			case 'm':
-				this.time = value * 60 * 1000;
-				break;
-			case 'h':
-				this.time = value * 3600 * 1000;
-				break;
-			default:
-				this.time = 0;
-				break;
+			for(int i = 0;i < strLength; i++){
+				
+				hms = timerTime.charAt(i);
+				
+				switch(hms){
+				case 'h':
+					String[] hourArr = timerTimeTemp.split("h");
+					if(hourArr.length > 1){
+						timerTimeTemp = hourArr[1];					
+					}
+					hours += Integer.valueOf(hourArr[0]);
+					break;
+				case 'm':
+					String[] minArr = timerTimeTemp.split("m");
+					if(minArr.length > 1){
+						timerTimeTemp = minArr[1];					
+					}
+					minutes += Integer.valueOf(minArr[0]);
+					break;
+				case 's':
+					String[] secArr = timerTimeTemp.split("s");
+					if(secArr.length > 1){
+						timerTimeTemp = secArr[1];						
+					}
+					seconds += Integer.valueOf(secArr[0]);
+					break;
+				default:
+					break;
+				}
 			}
+			
+			this.time = (
+					hours*timeMultipliers.get("h")+
+					minutes*timeMultipliers.get("m")+
+					seconds*timeMultipliers.get("s")
+				);
+			
 			return true;
 		}catch(NumberFormatException e){
 			
