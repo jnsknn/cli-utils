@@ -33,7 +33,7 @@ public class TimerInfo extends TimerTask{
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			
-			bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has been set");
+			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has been set");
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class TimerInfo extends TimerTask{
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			
-			System.out.println("Your timer " + this.name + " has been set");
+			System.out.println("Your timer [" + this.name + "] has been set");
 		}
 	}
 
@@ -79,7 +79,7 @@ public class TimerInfo extends TimerTask{
 			return true;
 		}catch(NumberFormatException e){
 			
-			String errorMsg = "Use ?timer [(int)time|h|m|s] [timerName]";
+			String errorMsg = "Use ?timer [(int)time|h|m|s] [Timer name]";
 			
 			if(bot.isConnected()){
 				bot.sendMessage(this.channel, errorMsg);
@@ -98,45 +98,52 @@ public class TimerInfo extends TimerTask{
 		
 		if(this.time == 3600 * 1000){
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has 1 hour left");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 1 hour left");
 			}else{
-				System.out.println("Your timer " + this.name + " has 1 hour left");				
+				System.out.println("Your timer [" + this.name + "] has 1 hour left");				
 			}
 		}
 		else if(this.time == 1800 * 1000){
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has 30 minutes left");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 30 minutes left");
 			}else{
-				System.out.println("Your timer " + this.name + " has 30 minutes left");				
+				System.out.println("Your timer [" + this.name + "] has 30 minutes left");				
 			}
 		}
 		else if(this.time == 600 * 1000){
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has 10 minutes left");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 10 minutes left");
 			}else{
-				System.out.println("Your timer " + this.name + " has 10 minutes left");				
+				System.out.println("Your timer [" + this.name + "] has 10 minutes left");				
 			}
 		}
 		else if(this.time == 300 * 1000){
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has 5 minutes left");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 5 minutes left");
 			}else{
-				System.out.println("Your timer " + this.name + " has 5 minutes left");				
+				System.out.println("Your timer [" + this.name + "] has 5 minutes left");				
+			}
+		}
+		else if(this.time == 60 * 1000){
+			if(bot.isConnected()){
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 1 minute left");
+			}else{
+				System.out.println("Your timer [" + this.name + "] has 1 minute left");				
 			}
 		}
 		else if(this.time == 30 * 1000){
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has 30 seconds left");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has 30 seconds left");
 			}else{
-				System.out.println("Your timer " + this.name + " has 30 seconds left");				
+				System.out.println("Your timer [" + this.name + "] has 30 seconds left");				
 			}
 		}
 		else if(this.time <= 0){
 			
 			if(bot.isConnected()){
-				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has finished!");
+				bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has finished!");
 			}else{
-				System.out.println("Your timer " + this.name + " has finished!");				
+				System.out.println("Your timer [" + this.name + "] has finished!");				
 			}
 			
 			this.timer.cancel();

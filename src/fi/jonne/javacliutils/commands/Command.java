@@ -58,9 +58,9 @@ public class Command {
 				break;
 			case TIMER:
 					if(!bot.isConnected()){
-						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], args[2]));						
+						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input));						
 					}else{
-						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], args[2], this.sender, this.channel));	
+						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input, this.sender, this.channel));	
 					}
 				break;
 			default:

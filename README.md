@@ -12,7 +12,7 @@ All commands except ?exit takes arguments. Arguments are separated with space.
 
 - ?irc [arg(BotName) arg(server) arg(#Channel)] connects to irc
 
-- ?timer [arg((int)time|h|m|s) arg(timerName)] sets timer
+- ?timer [arg((int)time|h|m|s) arg(Timer name)...arg(Timer name)] sets timer
 
 - ?exit disconnects irc and quits the main program
 

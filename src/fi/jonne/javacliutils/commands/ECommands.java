@@ -15,7 +15,7 @@ public enum ECommands {
 				inputString += args[i]+" ";
 			}
 			
-			return inputString;
+			return inputString.trim();
 		}
 	},
 	UFONAME {
@@ -32,7 +32,7 @@ public enum ECommands {
 				inputString += args[i]+" ";
 			}
 			
-			return inputString;
+			return inputString.trim();
 		}
 	},
 	EXIT {
@@ -49,7 +49,7 @@ public enum ECommands {
 				inputString += args[i]+" ";
 			}
 			
-			return inputString;
+			return inputString.trim();
 		}
 	},
 	IRC {
@@ -66,12 +66,12 @@ public enum ECommands {
 				inputString += args[i]+" ";
 			}
 			
-			return inputString;
+			return inputString.trim();
 		}
 	},
 	TIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("timer") && (args.length == 5 || args.length == 3)){
+			if(args[0].toLowerCase().startsWith("timer") && args.length >= 3){
 				return true;
 			}
 			return false;
@@ -79,11 +79,11 @@ public enum ECommands {
 		public String getInputStringFromArgs(String[] args){
 			String inputString = "";
 			
-			for(int i = 1; i < args.length; i++){
+			for(int i = 2; i < args.length; i++){
 				inputString += args[i]+" ";
 			}
 			
-			return inputString;
+			return inputString.trim();
 		}
 	};
 	
