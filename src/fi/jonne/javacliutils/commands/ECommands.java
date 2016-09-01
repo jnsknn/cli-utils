@@ -85,6 +85,23 @@ public enum ECommands {
 			
 			return inputString.trim();
 		}
+	},
+	RMTIMER {
+		public boolean isCommand(String[] args){
+			if(args[0].toLowerCase().startsWith("rmtimer") && args.length == 2){
+				return true;
+			}
+			return false;
+		}
+		public String getInputStringFromArgs(String[] args){
+			String inputString = "";
+			
+			for(int i = 1; i < args.length; i++){
+				inputString += args[i]+" ";
+			}
+			
+			return inputString.trim();
+		}
 	};
 	
 	public abstract boolean isCommand(String[] args);

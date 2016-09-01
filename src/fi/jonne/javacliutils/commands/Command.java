@@ -4,7 +4,7 @@ import java.util.Map;
 
 import fi.jonne.javacliutils.utils.Calculator;
 import fi.jonne.javacliutils.utils.IRCBot;
-import fi.jonne.javacliutils.utils.TimerContainer;
+import fi.jonne.javacliutils.utils.TimerInfoContainer;
 import fi.jonne.javacliutils.utils.TimerInfo;
 import fi.jonne.javacliutils.utils.UfoName;
 
@@ -27,7 +27,7 @@ public class Command {
 		if(validateCommand(args)){
 			switch(eCommand){
 			case CALCULATE:
-				this.output = Calculator.getInstance().calculate(this.input);
+				this.output = this.input + " = " + Calculator.getInstance().calculate(this.input);
 				break;
 			case UFONAME:
 				this.output = new UfoName(this.input).name;
@@ -61,17 +61,40 @@ public class Command {
 			case TIMER:
 				if(args.length > 1){
 					if(!bot.isConnected()){
-						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input));						
+						TimerInfoContainer.getInstance().setTimer(new TimerInfo(args[1], this.input));						
 					}else{
-						TimerContainer.getInstance().setTimer(new TimerInfo(args[1], this.input, this.sender, this.channel));	
+						TimerInfoContainer.getInstance().setTimer(new TimerInfo(args[1], this.input, this.sender, this.channel));	
 					}					
-				}else if(!bot.isConnected()){
-					for(Map.Entry<Integer, TimerInfo> timer : TimerContainer.getInstance().getTimers().entrySet()){
-//					    System.out.printf("Key : %s and Value: %s %n", timer.getKey(), timer.getValue().name);
-					}
-				}else{
+				}else if(args.length == 1){
 					
+					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
+						this.output = "No timers set. Use ?timer [(int)time|h|m|s] [Timer name] to set a timer!";
+					}
+					
+					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
+						
+						String ch = timer.getValue().channel;
+						String msg = "Timer id [" + timer.getValue().id + "] name [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!";
+						
+						if(bot.isConnected()){
+							bot.sendMessage(ch , msg);
+						}else{
+							System.out.println(msg);
+						}
+					}
 				}
+				break;
+			case RMTIMER:
+					if(TimerInfoContainer.getInstance().isTimer(Integer.valueOf(this.input))){
+						
+						TimerInfo timer = TimerInfoContainer.getInstance().getTimer(Integer.valueOf(this.input));
+						
+						TimerInfoContainer.getInstance().removeTimer(Integer.valueOf(this.input));
+						
+						this.output = timer.owner + ", your timer " + timer.name + " has been removed!";						
+					}else{
+						this.output = "No timer for id " + this.input + " found!";
+					}
 				break;
 			default:
 				this.output = "";
