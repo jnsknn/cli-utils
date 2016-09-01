@@ -60,11 +60,22 @@ public class Command {
 				break;
 			case TIMER:
 				if(args.length > 1){
+					
+					TimerInfo timer;
+					
 					if(!bot.isConnected()){
-						TimerInfoContainer.getInstance().setTimer(new TimerInfo(args[1], this.input));						
+						timer = new TimerInfo(args[1], this.input);
+						TimerInfoContainer.getInstance().setTimer(timer);						
 					}else{
-						TimerInfoContainer.getInstance().setTimer(new TimerInfo(args[1], this.input, this.sender, this.channel));	
-					}					
+						timer = new TimerInfo(args[1], this.input, this.sender, this.channel);
+						TimerInfoContainer.getInstance().setTimer(timer);	
+					}
+					
+					//Check if timer thread started correctly
+					if(!timer.isTimerRunning){
+						TimerInfoContainer.getInstance().removeTimer(timer.id);
+					}
+					
 				}else if(args.length == 1){
 					
 					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
@@ -93,7 +104,7 @@ public class Command {
 						
 						this.output = timer.owner + ", your timer " + timer.name + " has been removed!";						
 					}else{
-						this.output = "No timer for id " + this.input + " found!";
+						this.output = "No timer id " + this.input + " found!";
 					}
 				break;
 			default:

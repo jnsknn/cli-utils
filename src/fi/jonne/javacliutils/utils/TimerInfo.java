@@ -24,6 +24,7 @@ public class TimerInfo extends TimerTask{
 	private TimerTask timerTask;
 	private static IRCBot bot;
 	public int id;
+	public boolean isTimerRunning = false;
 	
 	/**
 	 * Use this constructor for creating public online timers if IRCBot is connected
@@ -47,7 +48,7 @@ public class TimerInfo extends TimerTask{
 			this.timerTask = this;
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
-			
+			this.isTimerRunning = true;
 			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
@@ -71,7 +72,7 @@ public class TimerInfo extends TimerTask{
 			this.timerTask = this;
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
-			
+			this.isTimerRunning = true;
 			System.out.println("Your timer [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
@@ -80,7 +81,7 @@ public class TimerInfo extends TimerTask{
 		try{
 			
 			final int strLength = timerTime.length();
-			int hours = 0, minutes = 0, seconds = 0;
+			long hours = 0, minutes = 0, seconds = 0;
 			char hms;
 			String timerTimeTemp = timerTime;
 			
@@ -94,21 +95,21 @@ public class TimerInfo extends TimerTask{
 					if(hourArr.length > 1){
 						timerTimeTemp = hourArr[1];					
 					}
-					hours += Integer.valueOf(hourArr[0]);
+					hours += Long.valueOf(hourArr[0]);
 					break;
 				case 'm':
 					String[] minArr = timerTimeTemp.split("m");
 					if(minArr.length > 1){
 						timerTimeTemp = minArr[1];					
 					}
-					minutes += Integer.valueOf(minArr[0]);
+					minutes += Long.valueOf(minArr[0]);
 					break;
 				case 's':
 					String[] secArr = timerTimeTemp.split("s");
 					if(secArr.length > 1){
 						timerTimeTemp = secArr[1];						
 					}
-					seconds += Integer.valueOf(secArr[0]);
+					seconds += Long.valueOf(secArr[0]);
 					break;
 				default:
 					break;
