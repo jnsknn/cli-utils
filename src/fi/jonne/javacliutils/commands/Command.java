@@ -79,7 +79,7 @@ public class Command {
 				}else if(args.length == 1){
 					
 					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
-						this.output = "No timers set. Use ?timer [(int)time|h|m|s] [Timer name] to set a timer!";
+						this.output = "No timers set. Use ?timer [(int)time (char)h|m|s] [timer name] to set a timer";
 					}
 					
 					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){

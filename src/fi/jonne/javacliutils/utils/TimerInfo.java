@@ -83,6 +83,8 @@ public class TimerInfo extends TimerTask{
 			final int strLength = timerTime.length();
 			long hours = 0, minutes = 0, seconds = 0;
 			char hms;
+			boolean charFound = false;
+			
 			String timerTimeTemp = timerTime;
 			
 			for(int i = 0;i < strLength; i++){
@@ -96,6 +98,7 @@ public class TimerInfo extends TimerTask{
 						timerTimeTemp = hourArr[1];					
 					}
 					hours += Long.valueOf(hourArr[0]);
+					charFound = true;
 					break;
 				case 'm':
 					String[] minArr = timerTimeTemp.split("m");
@@ -103,6 +106,7 @@ public class TimerInfo extends TimerTask{
 						timerTimeTemp = minArr[1];					
 					}
 					minutes += Long.valueOf(minArr[0]);
+					charFound = true;
 					break;
 				case 's':
 					String[] secArr = timerTimeTemp.split("s");
@@ -110,6 +114,7 @@ public class TimerInfo extends TimerTask{
 						timerTimeTemp = secArr[1];						
 					}
 					seconds += Long.valueOf(secArr[0]);
+					charFound = true;
 					break;
 				default:
 					break;
@@ -122,10 +127,21 @@ public class TimerInfo extends TimerTask{
 					seconds*timeMultipliers.get("s")
 				);
 			
-			return true;
+			if(!charFound){
+				
+				String msg = "Use ?timer [(int)time (char)h|m|s] [timer name] to set a timer";
+				
+				if(bot.isConnected()){
+					bot.sendMessage(this.channel, msg);
+				}else{
+					System.out.println(msg);				
+				}
+			}
+			
+			return charFound;
 		}catch(NumberFormatException e){
 			
-			String errorMsg = "Use ?timer [(int)time|h|m|s] [Timer name]";
+			String errorMsg = "ERROR " + e.getMessage();
 			
 			if(bot.isConnected()){
 				bot.sendMessage(this.channel, errorMsg);
