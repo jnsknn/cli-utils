@@ -64,47 +64,39 @@ public class Command {
 					TimerInfo timer;
 					
 					if(!bot.isConnected()){
-						timer = new TimerInfo(args[1], this.input);
-						TimerInfoContainer.getInstance().setTimer(timer);						
+						timer = new TimerInfo(args[1], this.input);						
 					}else{
 						timer = new TimerInfo(args[1], this.input, this.sender, this.channel);
-						TimerInfoContainer.getInstance().setTimer(timer);	
 					}
 					
 					//Check if timer thread started correctly
-					if(!timer.isTimerRunning){
-						TimerInfoContainer.getInstance().removeTimer(timer.id);
+					if(timer.isTimerRunning){
+						TimerInfoContainer.getInstance().setTimer(timer);
 					}
 					
 				}else if(args.length == 1){
 					
 					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
-						this.output = "No timers set. Use ?timer [(int)time (char)h|m|s] [timer name] to set a timer";
+						this.output = "No timers set. Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
 					}
+					
+					String timers = "";
 					
 					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
 						
-						String ch = timer.getValue().channel;
-						String msg = "Timer id [" + timer.getValue().id + "] name [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!";
+						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!<<";
 						
-						if(bot.isConnected()){
-							bot.sendMessage(ch , msg);
-						}else{
-							System.out.println(msg);
-						}
 					}
+					
+					this.output = timers;
 				}
 				break;
 			case RMTIMER:
-					if(TimerInfoContainer.getInstance().isTimer(Integer.valueOf(this.input))){
-						
+					if(TimerInfoContainer.getInstance().isTimerExist(Integer.valueOf(this.input))){
 						TimerInfo timer = TimerInfoContainer.getInstance().getTimer(Integer.valueOf(this.input));
-						
-						TimerInfoContainer.getInstance().removeTimer(Integer.valueOf(this.input));
-						
-						this.output = timer.owner + ", your timer " + timer.name + " has been removed!";						
+						timer.isTimerRunning = false;
 					}else{
-						this.output = "No timer id " + this.input + " found!";
+						this.output = "No timer with id " + this.input + " found. Use ?rmtimer [(int)id] to remove a timer";
 					}
 				break;
 			default:

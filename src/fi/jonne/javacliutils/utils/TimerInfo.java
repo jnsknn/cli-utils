@@ -9,7 +9,7 @@ public class TimerInfo extends TimerTask{
 	
 	public static final long PERIOD = 1000;
 	public static final long DELAY = 0;
-	public static final HashMap<String, Integer> timeMultipliers = new HashMap<String, Integer>(){
+	public static final HashMap<String, Integer> TIME_MX = new HashMap<String, Integer>(){
 		private static final long serialVersionUID = 1L;{
 		put("h", 3600000);
 		put("m", 60000);
@@ -44,12 +44,12 @@ public class TimerInfo extends TimerTask{
 
 		if(parseTimeFromTimerString(timerTime)){
 		
-			this.timer = new Timer();
+			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
-			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
 	
@@ -68,12 +68,11 @@ public class TimerInfo extends TimerTask{
 		
 		if(parseTimeFromTimerString(timerTime)){
 			
-			this.timer = new Timer();
+			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
-			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
-			System.out.println("Your timer [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			System.out.println("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
 
@@ -122,14 +121,14 @@ public class TimerInfo extends TimerTask{
 			}
 			
 			this.time = (
-					hours*timeMultipliers.get("h")+
-					minutes*timeMultipliers.get("m")+
-					seconds*timeMultipliers.get("s")
+					hours*TIME_MX.get("h")+
+					minutes*TIME_MX.get("m")+
+					seconds*TIME_MX.get("s")
 				);
 			
 			if(!charFound){
 				
-				String msg = "Use ?timer [(int)time (char)h|m|s] [timer name] to set a timer";
+				String msg = "Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
 				
 				if(bot.isConnected()){
 					bot.sendMessage(this.channel, msg);
@@ -161,9 +160,9 @@ public class TimerInfo extends TimerTask{
 		try{			
 			long hoursLeft = TimeUnit.MILLISECONDS.toHours(timeLeft);
 			
-			long minutesLeft = TimeUnit.MILLISECONDS.toMinutes(timeLeft-(hoursLeft * timeMultipliers.get("h")));
+			long minutesLeft = TimeUnit.MILLISECONDS.toMinutes(timeLeft-(hoursLeft * TIME_MX.get("h")));
 			
-			long secondsLeft = TimeUnit.MILLISECONDS.toSeconds((timeLeft - minutesLeft * timeMultipliers.get("m"))-(hoursLeft * timeMultipliers.get("h")));
+			long secondsLeft = TimeUnit.MILLISECONDS.toSeconds((timeLeft - minutesLeft * TIME_MX.get("m"))-(hoursLeft * TIME_MX.get("h")));
 			
 			if(hoursLeft > 0){
 				
@@ -209,6 +208,20 @@ public class TimerInfo extends TimerTask{
 	public void run() {
 		
 		this.time -= PERIOD;
+		
+		if(!this.isTimerRunning){
+			this.timer.cancel();
+			TimerInfoContainer.getInstance().removeTimer(this.id);
+			
+			if(bot.isConnected() && this.time > 0){
+				bot.sendMessage(this.channel, this.owner + ", your timer " + this.name + " has been removed!");
+			}
+			else if(!bot.isConnected() && this.time > 0){}{
+				System.out.println(this.owner + ", your timer " + this.name + " has been removed!");				
+			}
+			
+			return;
+		}
 		
 		if(this.time == 3600 * 1000){
 			if(bot.isConnected()){
@@ -259,10 +272,7 @@ public class TimerInfo extends TimerTask{
 			}else{
 				System.out.println("Your timer [" + this.name + "] has finished!");				
 			}
-			
-			this.timer.cancel();
-			
-			TimerInfoContainer.getInstance().removeTimer(this.id);
+			this.isTimerRunning = false;
 		}
 	}
 

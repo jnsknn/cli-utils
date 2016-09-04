@@ -6,6 +6,7 @@ public class TimerInfoContainer {
 	
 	private static TimerInfoContainer instance;
 	private static HashMap<Integer, TimerInfo> timerInfos;
+	private static int nextId = 0;
 	
 	public TimerInfoContainer(){
 		
@@ -20,7 +21,7 @@ public class TimerInfoContainer {
 	}
 	
 	public void setTimer(TimerInfo timerInfo){
-		timerInfos.put(getNextId(), timerInfo);
+		timerInfos.put(nextId, timerInfo);
 	}
 	
 	public TimerInfo getTimer(int id){
@@ -28,7 +29,8 @@ public class TimerInfoContainer {
 	}
 	
 	public int getNextId(){
-		return timerInfos.size()+1;
+		nextId += 1;
+		return nextId;
 	}
 	
 	public HashMap<Integer, TimerInfo> getTimers(){
@@ -36,11 +38,10 @@ public class TimerInfoContainer {
 	}
 	
 	public void removeTimer(int id){
-		timerInfos.get(id).cancel();
 		timerInfos.remove(id);
 	}
 	
-	public boolean isTimer(int id){
+	public boolean isTimerExist(int id){
 		if(timerInfos.get(id) != null){
 			return true;
 		}else{
