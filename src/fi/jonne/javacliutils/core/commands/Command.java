@@ -10,13 +10,13 @@ import fi.jonne.javacliutils.core.utils.UfoName;
 
 public class Command {
 	
-	private ECommands eCommand;
-	private String input;
-	private String output;
-	private static IRCBot bot;
+	protected ECommands eCommand;
+	protected String input;
+	protected String output;
+	protected static IRCBot bot;
 	
-	private String sender;
-	private String channel;
+	protected String sender;
+	protected String channel;
 	
 	public Command(){
 		bot = IRCBot.getInstance();
@@ -27,10 +27,10 @@ public class Command {
 		if(validateCommand(args)){
 			switch(eCommand){
 			case CALCULATE:
-				this.output = this.input + " = " + Calculator.getInstance().calculate(this.input);
+				output = input + " = " + Calculator.getInstance().calculate(input);
 				break;
 			case UFONAME:
-				this.output = new UfoName(this.input).name;
+				output = new UfoName(input).name;
 				break;
 			case EXIT:
 				IRCBot.getInstance().disconnect();
@@ -64,9 +64,9 @@ public class Command {
 					TimerInfo timer;
 					
 					if(!bot.isConnected()){
-						timer = new TimerInfo(args[1], this.input);						
+						timer = new TimerInfo(args[1], input);						
 					}else{
-						timer = new TimerInfo(args[1], this.input, this.sender, this.channel);
+						timer = new TimerInfo(args[1], input, sender, channel);
 					}
 					
 					//Check if timer thread started correctly
@@ -77,7 +77,7 @@ public class Command {
 				}else if(args.length == 1){
 					
 					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
-						this.output = "No timers set. Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
+						output = "No timers set. Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
 					}
 					
 					String timers = "";
@@ -88,22 +88,22 @@ public class Command {
 						
 					}
 					
-					this.output = timers;
+					output = timers;
 				}
 				break;
 			case RMTIMER:
-					if(TimerInfoContainer.getInstance().isTimerExist(Integer.valueOf(this.input))){
-						TimerInfo timer = TimerInfoContainer.getInstance().getTimer(Integer.valueOf(this.input));
+					if(TimerInfoContainer.getInstance().isTimerExist(Integer.valueOf(input))){
+						TimerInfo timer = TimerInfoContainer.getInstance().getTimer(Integer.valueOf(input));
 						timer.isTimerRunning = false;
 					}else{
-						this.output = "No timer with id " + this.input + " found. Use ?rmtimer [(int)id] to remove a timer";
+						output = "No timer with id " + input + " found. Use ?rmtimer [(int)id] to remove a timer";
 					}
 				break;
 			default:
-				this.output = "";
+				output = "";
 			}
 			
-			if(!bot.isConnected() && this.output != null){
+			if(!bot.isConnected() && output != null){
 				printOutput();
 			}
 		}
@@ -113,8 +113,8 @@ public class Command {
 		
 		for(ECommands cmd : ECommands.values()){
 			if(cmd.isCommand(args)){
-				this.eCommand = cmd;
-				this.input = cmd.getInputStringFromArgs(args);
+				eCommand = cmd;
+				input = cmd.getInputStringFromArgs(args);
 				return true;
 			}
 		}
@@ -124,30 +124,30 @@ public class Command {
 	}
 	
 	public String getOutput(){
-		return this.output;
+		return output;
 	}
 	
-	public void setOutput(String output){
-		this.output = output;
+	public void setOutput(String outputStr){
+		output = outputStr;
 	};
 	
 	private void printOutput(){
-		System.out.println(this.output);
+		System.out.println(output);
 	}
 	
-	public void setSender(String sender){
-		this.sender = sender;
+	public void setSender(String senderStr){
+		sender = senderStr;
 	}
 	
 	public String getSender(){
-		return this.sender;
+		return sender;
 	}
 	
-	public void setChannel(String channel){
-		this.channel = channel;
+	public void setChannel(String channelStr){
+		channel = channelStr;
 	}
 	
 	public String getChannel(){
-		return this.channel;
+		return channel;
 	}
 }

@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.ui;
+package fi.jonne.javacliutils.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
