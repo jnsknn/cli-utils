@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.utils;
+package fi.jonne.javacliutils.core.utils;
 
 import java.util.HashMap;
 import java.util.Timer;

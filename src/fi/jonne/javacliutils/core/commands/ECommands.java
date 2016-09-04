@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.commands;
+package fi.jonne.javacliutils.core.commands;
 
 public enum ECommands {
 	CALCULATE {

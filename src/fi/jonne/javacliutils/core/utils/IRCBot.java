@@ -1,11 +1,11 @@
-package fi.jonne.javacliutils.utils;
+package fi.jonne.javacliutils.core.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jibble.pircbot.PircBot;
 
-import fi.jonne.javacliutils.commands.Command;
+import fi.jonne.javacliutils.core.commands.Command;
 
 public class IRCBot extends PircBot{
 	

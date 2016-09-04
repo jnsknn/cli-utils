@@ -1,12 +1,12 @@
-package fi.jonne.javacliutils.commands;
+package fi.jonne.javacliutils.core.commands;
 
 import java.util.Map;
 
-import fi.jonne.javacliutils.utils.Calculator;
-import fi.jonne.javacliutils.utils.IRCBot;
-import fi.jonne.javacliutils.utils.TimerInfoContainer;
-import fi.jonne.javacliutils.utils.TimerInfo;
-import fi.jonne.javacliutils.utils.UfoName;
+import fi.jonne.javacliutils.core.utils.Calculator;
+import fi.jonne.javacliutils.core.utils.IRCBot;
+import fi.jonne.javacliutils.core.utils.TimerInfo;
+import fi.jonne.javacliutils.core.utils.TimerInfoContainer;
+import fi.jonne.javacliutils.core.utils.UfoName;
 
 public class Command {
 	

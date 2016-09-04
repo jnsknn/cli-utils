@@ -1,4 +1,4 @@
-package fi.jonne.javacliutils.utils;
+package fi.jonne.javacliutils.core.utils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
