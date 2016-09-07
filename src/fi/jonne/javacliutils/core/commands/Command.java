@@ -78,17 +78,18 @@ public class Command {
 					
 					if(TimerInfoContainer.getInstance().getTimers().size() < 1){
 						output = "No timers set. Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
+					}else{						
+						String timers = "";
+						
+						for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
+							
+							timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!<<";
+							
+						}
+						
+						output = timers;
 					}
 					
-					String timers = "";
-					
-					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
-						
-						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!<<";
-						
-					}
-					
-					output = timers;
 				}
 				break;
 			case RMTIMER:
@@ -96,7 +97,7 @@ public class Command {
 						TimerInfo timer = TimerInfoContainer.getInstance().getTimer(Integer.valueOf(input));
 						timer.isTimerRunning = false;
 					}else{
-						output = "No timer with id " + input + " found. Use ?rmtimer [(int)id] to remove a timer";
+						output = "No timer " + input + " found. Use ?rmtimer [(int)id] to remove a timer";
 					}
 				break;
 			default:
