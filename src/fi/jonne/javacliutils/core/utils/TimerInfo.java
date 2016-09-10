@@ -5,6 +5,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import fi.jonne.javacliutils.core.Communicator;
+
 public class TimerInfo extends TimerTask{
 	
 	// Run timer every second
@@ -19,7 +21,7 @@ public class TimerInfo extends TimerTask{
 	
 	public String name = "timer";
 	public String owner = "You";
-	public String channel;
+	private String channel;
 	private long timeStart;
 	private long timeEnd;
 	private long time;
@@ -53,7 +55,7 @@ public class TimerInfo extends TimerTask{
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
-			IRCBot.getInstance().sendMessage(this.channel, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
 	
@@ -79,7 +81,7 @@ public class TimerInfo extends TimerTask{
 
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
-			System.out.println("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
 
@@ -135,22 +137,12 @@ public class TimerInfo extends TimerTask{
 				);
 			
 			if(!charFound){
-				
-				String msg = "Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
-				
-				if(IRCBot.getInstance().isConnected()){
-					IRCBot.getInstance().sendMessage(this.channel, msg);
-				}else{
-					System.out.println(msg);				
-				}
+				Communicator.getInstance().handleOutput("Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer");
 			}
 			
 			return charFound;
 		}catch(NumberFormatException e){
-			
-			String errorMsg = "ERROR " + e.getMessage();
-			System.out.println(errorMsg);		
-			
+			Communicator.getInstance().handleError("parseTimeFromTimerString error: " + e.getMessage());
 			return false;
 		}
 	}
@@ -203,7 +195,8 @@ public class TimerInfo extends TimerTask{
 			
 			return timeString;
 		}catch(NumberFormatException e){
-			return e.getMessage();
+			Communicator.getInstance().handleError("parseTimeStringFromTime error: " + e.getMessage());
+			return "";
 		}
 	}
 
@@ -213,17 +206,14 @@ public class TimerInfo extends TimerTask{
 		this.time -= PERIOD;
 		
 		if(!this.isTimerRunning){
+						
+			if(this.time != -PERIOD){
+				// This is automated message, so set channel!
+				Communicator.getInstance().setChannel(this.channel);
+				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been removed");
+			}
 			
 			TimerInfoContainer.getInstance().removeTimer(this.id);
-			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been removed";
-			
-			if(IRCBot.getInstance().isConnected() && this.time != -PERIOD){
-				IRCBot.getInstance().sendMessage(this.channel, msg);
-			}
-			else if(!IRCBot.getInstance().isConnected() && this.time != -PERIOD){
-				System.out.println(msg);				
-			}
-			
 			this.timer.cancel();
 			
 			return;
@@ -236,14 +226,10 @@ public class TimerInfo extends TimerTask{
 				this.time == 300 * 1000 || // has 5 minutes left
 				this.time == 60 * 1000 || // has 1 minute left
 				this.time == 30 * 1000){ // has 30 seconds left
-
-			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime() + " left";
 			
-			if(IRCBot.getInstance().isConnected()){
-				IRCBot.getInstance().sendMessage(this.channel, msg);
-			}else{
-				System.out.println(msg);				
-			}
+			// This is automated message, so set channel!
+			Communicator.getInstance().setChannel(this.channel);
+			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime() + " left");
 		}
 		else if(this.time <= 0L){
 			
@@ -255,12 +241,10 @@ public class TimerInfo extends TimerTask{
 				this.time = this.timeEnd - this.timeStart;
 				msg += " and set again for " + parseTimeStringFromTime();
 			}
-			
-			if(IRCBot.getInstance().isConnected()){
-				IRCBot.getInstance().sendMessage(this.channel, msg);
-			}else{
-				System.out.println(msg);				
-			}
+
+			// This is automated message, so set channel!
+			Communicator.getInstance().setChannel(this.channel);
+			Communicator.getInstance().handleOutput(msg);
 		}
 	}
 

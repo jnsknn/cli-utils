@@ -41,6 +41,7 @@ public class IRCBot extends PircBot{
 				message = message.substring(1);
 				String[] args = message.split(" ");
 				
+				// Let IRCBot take care who to serve by setting sender and channel for communicator
 				Communicator.getInstance().setSender(sender);
 				Communicator.getInstance().setChannel(channel);
 				
