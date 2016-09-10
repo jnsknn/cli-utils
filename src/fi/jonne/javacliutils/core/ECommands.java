@@ -174,9 +174,9 @@ public enum ECommands implements ICommands {
 				TimerInfo timer;
 				
 				if(!IRCBot.getInstance().isConnected()){
-					timer = new TimerInfo(args[1], getInputStringFromArgs(args), false);						
+					timer = new TimerInfo(args[1], "0s", getInputStringFromArgs(args), false);						
 				}else{
-					timer = new TimerInfo(args[1], getInputStringFromArgs(args),
+					timer = new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
 							Communicator.getInstance().getSender(),
 							Communicator.getInstance().getChannel(), false);
 				}
@@ -195,7 +195,7 @@ public enum ECommands implements ICommands {
 					
 					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
 						
-						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime() + " remaining!<<";
+						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime(timer.getValue().time) + " remaining!<<";
 						
 					}
 					Communicator.getInstance().handleOutput(timers);
@@ -236,7 +236,7 @@ public enum ECommands implements ICommands {
 	},
 	RTIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("rtimer") && args.length >= 1){
+			if(args[0].toLowerCase().startsWith("rtimer") && args.length >= 4){
 				return true;
 			}
 			return false;
@@ -244,7 +244,7 @@ public enum ECommands implements ICommands {
 		public String getInputStringFromArgs(String[] args){
 			String inputString = "";
 			
-			for(int i = 2; i < args.length; i++){
+			for(int i = 3; i < args.length; i++){
 				inputString += args[i]+" ";
 			}
 			
@@ -258,9 +258,9 @@ public enum ECommands implements ICommands {
 			TimerInfo timer;
 			
 			if(!IRCBot.getInstance().isConnected()){
-				timer = new TimerInfo(args[1], getInputStringFromArgs(args), true);						
+				timer = new TimerInfo(args[1], args[2], getInputStringFromArgs(args), true);						
 			}else{
-				timer = new TimerInfo(args[1], getInputStringFromArgs(args),
+				timer = new TimerInfo(args[1], args[2], getInputStringFromArgs(args),
 						Communicator.getInstance().getSender(),
 						Communicator.getInstance().getChannel(), true);
 			}

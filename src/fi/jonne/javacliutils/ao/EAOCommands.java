@@ -27,7 +27,7 @@ public enum EAOCommands implements ICommands {
 			return true;
 		}
 		public void execute(String[] args) {
-			Communicator.getInstance().handleOutput("fx jotain");
+			Communicator.getInstance().handleOutput("/fxscript Tweak_Rubi-Ka_Sunlight #");
 		}
 	};
 }

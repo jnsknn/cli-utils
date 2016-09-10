@@ -11,7 +11,6 @@ public class TimerInfo extends TimerTask{
 	
 	// Run timer every second
 	public static final long PERIOD = 1000;
-	public static final long DELAY = 0;
 	public static final HashMap<String, Integer> TIME_MX = new HashMap<String, Integer>(){
 		private static final long serialVersionUID = 1L;{
 		put("h", 3600000);
@@ -24,7 +23,8 @@ public class TimerInfo extends TimerTask{
 	private String channel;
 	private long timeStart;
 	private long timeEnd;
-	private long time;
+	public long time;
+	private long delay;
 	private Timer timer;
 	private TimerTask timerTask;
 	public int id;
@@ -34,7 +34,7 @@ public class TimerInfo extends TimerTask{
 	/**
 	 * Use this constructor for creating public online timers if IRCIRCBot.getInstance() is connected
 	 * **/
-	public TimerInfo(String timerTime, String timerName, String timerOwner, String timerChannel, boolean isRepeating){
+	public TimerInfo(String timerTime, String timerDelay, String timerName, String timerOwner, String timerChannel, boolean isRepeating){
 		
 		this.id = TimerInfoContainer.getInstance().getNextId();
 		
@@ -44,25 +44,32 @@ public class TimerInfo extends TimerTask{
 		
 		this.owner = timerOwner;
 		this.channel = timerChannel;
+		this.time = parseTimeFromTimerString(timerTime);
+		this.delay = parseTimeFromTimerString(timerDelay);
 		this.isTimerRepeating = isRepeating;
-
-		if(parseTimeFromTimerString(timerTime)){
+		
+		if(this.time > 0L){
 		
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
 			this.timeStart = System.currentTimeMillis();
 			this.timeEnd = this.timeStart + this.time;
 			
-			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
+			this.timer.scheduleAtFixedRate(this.timerTask, this.delay, PERIOD);
 			this.isTimerRunning = true;
-			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			
+			if(!this.isTimerRepeating){
+				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time) + "!");				
+			}else{
+				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time) + " in " + parseTimeStringFromTime(this.delay) + "!");
+			}
 		}
 	}
 	
 	/**
 	 * Use this constructor for creating offline local timers
 	 * **/
-	public TimerInfo(String timerTime, String timerName, boolean isRepeating){
+	public TimerInfo(String timerTime, String timerDelay, String timerName, boolean isRepeating){
 		
 		this.id = TimerInfoContainer.getInstance().getNextId();
 		
@@ -70,34 +77,43 @@ public class TimerInfo extends TimerTask{
 			this.name = timerName;			
 		}
 		
+		this.time = parseTimeFromTimerString(timerTime);
+		this.delay = parseTimeFromTimerString(timerDelay);
 		this.isTimerRepeating = isRepeating;
 		
-		if(parseTimeFromTimerString(timerTime)){
+		if(this.time > 0L){
 			
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
 			this.timeStart = System.currentTimeMillis();
 			this.timeEnd = this.timeStart + this.time;
 
-			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
+			this.timer.scheduleAtFixedRate(this.timerTask, this.delay, PERIOD);
 			this.isTimerRunning = true;
-			Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			
+			if(!this.isTimerRepeating){
+				Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time) + "!");				
+			}else{
+				Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time) + " in " + parseTimeStringFromTime(this.delay) + "!");
+			}
 		}
 	}
 
-	private boolean parseTimeFromTimerString(String timerTime){
+	private long parseTimeFromTimerString(String timerString){
 		try{
 			
-			final int strLength = timerTime.length();
+			long parsedTimeLong = 0L;
+			
+			final int strLength = timerString.length();
 			long hours = 0, minutes = 0, seconds = 0;
 			char hms;
 			boolean charFound = false;
 			
-			String timerTimeTemp = timerTime;
+			String timerTimeTemp = timerString;
 			
 			for(int i = 0;i < strLength; i++){
 				
-				hms = timerTime.charAt(i);
+				hms = timerString.charAt(i);
 				
 				switch(hms){
 				case 'h':
@@ -130,7 +146,7 @@ public class TimerInfo extends TimerTask{
 				}
 			}
 			
-			this.time = (
+			parsedTimeLong = (
 					hours*TIME_MX.get("h")+
 					minutes*TIME_MX.get("m")+
 					seconds*TIME_MX.get("s")
@@ -140,17 +156,17 @@ public class TimerInfo extends TimerTask{
 				Communicator.getInstance().handleOutput("Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer");
 			}
 			
-			return charFound;
+			return parsedTimeLong;
 		}catch(NumberFormatException e){
 			Communicator.getInstance().handleError("parseTimeFromTimerString error: " + e.getMessage());
-			return false;
+			return 0L;
 		}
 	}
 	
-	public String parseTimeStringFromTime(){
+	public String parseTimeStringFromTime(long timeLong){
 		String timeString = "";
 		
-		long timeLeft = this.time;
+		long timeLeft = timeLong;
 		
 		try{			
 			long hoursLeft = TimeUnit.MILLISECONDS.toHours(timeLeft);
@@ -229,7 +245,7 @@ public class TimerInfo extends TimerTask{
 			
 			// This is automated message, so set channel!
 			Communicator.getInstance().setChannel(this.channel);
-			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime() + " left");
+			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime(this.time) + " left");
 		}
 		else if(this.time <= 0L){
 			
@@ -239,7 +255,7 @@ public class TimerInfo extends TimerTask{
 				this.isTimerRunning = false;
 			}else{
 				this.time = this.timeEnd - this.timeStart;
-				msg += " and set again for " + parseTimeStringFromTime();
+				msg += " and set again for " + parseTimeStringFromTime(this.time);
 			}
 
 			// This is automated message, so set channel!
