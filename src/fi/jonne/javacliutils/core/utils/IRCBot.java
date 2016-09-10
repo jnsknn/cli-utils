@@ -5,20 +5,26 @@ import java.util.Date;
 
 import org.jibble.pircbot.PircBot;
 
-import fi.jonne.javacliutils.core.commands.Command;
+import fi.jonne.javacliutils.core.Command;
+import fi.jonne.javacliutils.core.Communicator;
 
 public class IRCBot extends PircBot{
 	
 	private static IRCBot instance;
 	
-	public IRCBot(){
-	}
+	public IRCBot(){}
 	
 	public static IRCBot getInstance(){
 		if(instance == null){
 			instance = new IRCBot();
 		}
 		return instance;
+	}
+	
+	public void onDisconnect(){
+		System.out.println("IRCBot disconnected!");
+		getInstance().dispose();
+		instance = null;
 	}
 	
 	public void onMessage(String channel, String sender,
@@ -35,28 +41,23 @@ public class IRCBot extends PircBot{
 				message = message.substring(1);
 				String[] args = message.split(" ");
 				
+				Communicator.getInstance().setSender(sender);
+				Communicator.getInstance().setChannel(channel);
+				
 				Command cmd = new Command();
-				
-				cmd.setSender(sender);
-				cmd.setChannel(channel);
 				cmd.executeCommand(args);
-				
-				if(cmd.getOutput() != null)
-					sendMessage(channel, cmd.getOutput());
 				
 			}else if(message.split(":")[1].trim().startsWith("?")){
 				
 				message = message.split(":")[1].trim().substring(1);
 				String[] args = message.split(" ");
 				
-				Command cmd = new Command();
+				Communicator.getInstance().setSender(sender);
+				Communicator.getInstance().setChannel(channel);
 				
-				cmd.setSender(sender);
-				cmd.setChannel(channel);
+				Command cmd = new Command();
 				cmd.executeCommand(args);
 				
-				if(cmd.getOutput() != null)
-					sendMessage(channel, cmd.getOutput());
 			}
 	}
 	

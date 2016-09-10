@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerInfo extends TimerTask{
 	
+	// Run timer every second
 	public static final long PERIOD = 1000;
 	public static final long DELAY = 0;
 	public static final HashMap<String, Integer> TIME_MX = new HashMap<String, Integer>(){
@@ -19,17 +20,19 @@ public class TimerInfo extends TimerTask{
 	public String name = "timer";
 	public String owner = "You";
 	public String channel;
+	private long timeStart;
+	private long timeEnd;
 	private long time;
 	private Timer timer;
 	private TimerTask timerTask;
-	private static IRCBot bot;
 	public int id;
 	public boolean isTimerRunning = false;
+	public boolean isTimerRepeating = false;
 	
 	/**
-	 * Use this constructor for creating public online timers if IRCBot is connected
+	 * Use this constructor for creating public online timers if IRCIRCBot.getInstance() is connected
 	 * **/
-	public TimerInfo(String timerTime, String timerName, String timerOwner, String timerChannel){
+	public TimerInfo(String timerTime, String timerName, String timerOwner, String timerChannel, boolean isRepeating){
 		
 		this.id = TimerInfoContainer.getInstance().getNextId();
 		
@@ -39,24 +42,25 @@ public class TimerInfo extends TimerTask{
 		
 		this.owner = timerOwner;
 		this.channel = timerChannel;
-		
-		bot = IRCBot.getInstance();
+		this.isTimerRepeating = isRepeating;
 
 		if(parseTimeFromTimerString(timerTime)){
 		
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
+			this.timeStart = System.currentTimeMillis();
+			this.timeEnd = this.timeStart + this.time;
 			
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
-			bot.sendMessage(this.channel, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
+			IRCBot.getInstance().sendMessage(this.channel, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
 		}
 	}
 	
 	/**
 	 * Use this constructor for creating offline local timers
 	 * **/
-	public TimerInfo(String timerTime, String timerName){
+	public TimerInfo(String timerTime, String timerName, boolean isRepeating){
 		
 		this.id = TimerInfoContainer.getInstance().getNextId();
 		
@@ -64,12 +68,15 @@ public class TimerInfo extends TimerTask{
 			this.name = timerName;			
 		}
 		
-		bot = IRCBot.getInstance();
+		this.isTimerRepeating = isRepeating;
 		
 		if(parseTimeFromTimerString(timerTime)){
 			
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			this.timerTask = this;
+			this.timeStart = System.currentTimeMillis();
+			this.timeEnd = this.timeStart + this.time;
+
 			this.timer.scheduleAtFixedRate(this.timerTask, DELAY, PERIOD);
 			this.isTimerRunning = true;
 			System.out.println("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime() + "!");
@@ -116,6 +123,7 @@ public class TimerInfo extends TimerTask{
 					charFound = true;
 					break;
 				default:
+					charFound = false;
 					break;
 				}
 			}
@@ -130,8 +138,8 @@ public class TimerInfo extends TimerTask{
 				
 				String msg = "Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer";
 				
-				if(bot.isConnected()){
-					bot.sendMessage(this.channel, msg);
+				if(IRCBot.getInstance().isConnected()){
+					IRCBot.getInstance().sendMessage(this.channel, msg);
 				}else{
 					System.out.println(msg);				
 				}
@@ -141,12 +149,7 @@ public class TimerInfo extends TimerTask{
 		}catch(NumberFormatException e){
 			
 			String errorMsg = "ERROR " + e.getMessage();
-			
-			if(bot.isConnected()){
-				bot.sendMessage(this.channel, errorMsg);
-			}else{
-				System.out.println(errorMsg);				
-			}
+			System.out.println(errorMsg);		
 			
 			return false;
 		}
@@ -210,17 +213,18 @@ public class TimerInfo extends TimerTask{
 		this.time -= PERIOD;
 		
 		if(!this.isTimerRunning){
-			this.timer.cancel();
+			
 			TimerInfoContainer.getInstance().removeTimer(this.id);
+			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been removed";
 			
-			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been removed!";
-			
-			if(bot.isConnected() && this.time > 0){
-				bot.sendMessage(this.channel, msg);
+			if(IRCBot.getInstance().isConnected() && this.time != -PERIOD){
+				IRCBot.getInstance().sendMessage(this.channel, msg);
 			}
-			else if(!bot.isConnected() && this.time > 0){}{
+			else if(!IRCBot.getInstance().isConnected() && this.time != -PERIOD){
 				System.out.println(msg);				
 			}
+			
+			this.timer.cancel();
 			
 			return;
 		}
@@ -235,22 +239,28 @@ public class TimerInfo extends TimerTask{
 
 			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime() + " left";
 			
-			if(bot.isConnected()){
-				bot.sendMessage(this.channel, msg);
+			if(IRCBot.getInstance().isConnected()){
+				IRCBot.getInstance().sendMessage(this.channel, msg);
 			}else{
 				System.out.println(msg);				
 			}
 		}
-		else if(this.time <= 0){
+		else if(this.time <= 0L){
 			
-			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished!";
+			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished";
 			
-			if(bot.isConnected()){
-				bot.sendMessage(this.channel, msg);
+			if(!this.isTimerRepeating){				
+				this.isTimerRunning = false;
+			}else{
+				this.time = this.timeEnd - this.timeStart;
+				msg += " and set again for " + parseTimeStringFromTime();
+			}
+			
+			if(IRCBot.getInstance().isConnected()){
+				IRCBot.getInstance().sendMessage(this.channel, msg);
 			}else{
 				System.out.println(msg);				
 			}
-			this.isTimerRunning = false;
 		}
 	}
 

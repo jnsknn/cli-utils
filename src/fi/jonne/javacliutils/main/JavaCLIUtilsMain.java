@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import fi.jonne.javacliutils.core.commands.Command;
-import fi.jonne.javacliutils.core.commands.ECommands;
+import fi.jonne.javacliutils.core.Command;
+import fi.jonne.javacliutils.core.ECommands;
 import fi.jonne.javacliutils.core.utils.IRCBot;
 
 public class JavaCLIUtilsMain {
@@ -34,8 +34,7 @@ public class JavaCLIUtilsMain {
 			String[] args = input.split(" ");
 			
 			try{
-				IRCBot bot = IRCBot.getInstance();
-				bot.sendMessage(args[0], ECommands.IRC.getInputStringFromArgs(args));
+				IRCBot.getInstance().sendMessage(args[0], ECommands.IRC.getInputStringFromArgs(args));
 			}catch(Exception e){
 				System.err.println("handleInput() error: " + e.getMessage());
 			}

@@ -8,9 +8,7 @@ public class TimerInfoContainer {
 	private static HashMap<Integer, TimerInfo> timerInfos;
 	private static int nextId = 0;
 	
-	public TimerInfoContainer(){
-		
-	}
+	public TimerInfoContainer(){}
 	
 	public static TimerInfoContainer getInstance(){
 		if(instance == null){
