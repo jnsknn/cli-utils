@@ -15,6 +15,8 @@ Arguments are separated with space.
 - ?rmtimer [arg((int)id)] removes timer
 - ?exit disconnects irc if bot is connected to a server. Quits the main program if bot is offline
 - ?help posts link to this file
+- ?playlist shows youtube playlist from posted youtube links
+- ?clplaylist clears playlist
 
 # Examples
 
@@ -51,6 +53,16 @@ You can make timer repeating by using command ?rtimer instead of regular ?timer
 
 - Input: ?help
 	- Output: https://github.com/jnsknn/java-cli-utils/blob/master/README.md
+	
+You can make playlist by posting youtube links into chat
+	
+- Input: Check this video https://www.youtube.com/watch?v=oSOd8lnGfcE this is a cool video too https://www.youtube.com/watch?v=XmLSeuJE_Ds this is awesome video https://www.youtube.com/watch?v=N4pj7RByIeA
+
+- Input: ?playlist
+	- Output: https://www.youtube.com/watch_videos?video_ids=oSOd8lnGfcE,XmLSeuJE_Ds,N4pj7RByIeA
+	
+-Input: ?clplaylist
+	- Output: Playlist cleared!
 
 # Dependencies
 

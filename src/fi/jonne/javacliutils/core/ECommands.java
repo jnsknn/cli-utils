@@ -4,6 +4,7 @@ import java.util.Map;
 
 import fi.jonne.javacliutils.core.utils.Calculator;
 import fi.jonne.javacliutils.core.utils.IRCBot;
+import fi.jonne.javacliutils.core.utils.Playlist;
 import fi.jonne.javacliutils.core.utils.TimerInfo;
 import fi.jonne.javacliutils.core.utils.TimerInfoContainer;
 import fi.jonne.javacliutils.core.utils.UfoName;
@@ -292,6 +293,57 @@ public enum ECommands implements ICommands {
 		}
 		public void execute(String[] args) {
 			Communicator.getInstance().handleOutput("https://github.com/jnsknn/java-cli-utils/blob/master/README.md");
+		}
+	},
+	PLAYLIST {
+		public boolean isCommand(String[] args){
+			if(args[0].toLowerCase().startsWith("playlist")){
+				return true;
+			}
+			return false;
+		}
+		public String getInputStringFromArgs(String[] args){
+			String inputString = "";
+			
+			for(int i = 2; i < args.length; i++){
+				inputString += args[i]+" ";
+			}
+			
+			return inputString.trim();
+		}
+		public boolean isAuthorized(String sender){
+			return true;
+		}
+		public void execute(String[] args) {
+			if(args.length == 1){				
+				Communicator.getInstance().handleOutput(Playlist.getInstance().getPlaylistURL());
+			}
+		}
+	},
+	CLPLAYLIST {
+		public boolean isCommand(String[] args){
+			if(args[0].toLowerCase().startsWith("clplaylist")){
+				return true;
+			}
+			return false;
+		}
+		public String getInputStringFromArgs(String[] args){
+			String inputString = "";
+			
+			for(int i = 2; i < args.length; i++){
+				inputString += args[i]+" ";
+			}
+			
+			return inputString.trim();
+		}
+		public boolean isAuthorized(String sender){
+			return true;
+		}
+		public void execute(String[] args) {
+			if(args.length == 1){
+				Playlist.getInstance().clearPlaylist();
+				Communicator.getInstance().handleOutput("Playlist cleared!");
+			}
 		}
 	};
 }

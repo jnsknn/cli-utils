@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.jibble.pircbot.PircBot;
 
-import fi.jonne.javacliutils.core.Command;
 import fi.jonne.javacliutils.core.Communicator;
 
 public class IRCBot extends PircBot{
@@ -34,32 +33,11 @@ public class IRCBot extends PircBot{
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		String timeStamp = sdf.format(date);
 		
-		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
+		// Let IRCBot take care who to serve by setting sender and channel for communicator
+		Communicator.getInstance().setSender(sender);
+		Communicator.getInstance().setChannel(channel);
 		
-			if(message.startsWith("?")){
-				
-				message = message.substring(1);
-				String[] args = message.split(" ");
-				
-				// Let IRCBot take care who to serve by setting sender and channel for communicator
-				Communicator.getInstance().setSender(sender);
-				Communicator.getInstance().setChannel(channel);
-				
-				Command cmd = new Command();
-				cmd.executeCommand(args);
-				
-			}else if(message.split(":")[1].trim().startsWith("?")){
-				
-				message = message.split(":")[1].trim().substring(1);
-				String[] args = message.split(" ");
-				
-				Communicator.getInstance().setSender(sender);
-				Communicator.getInstance().setChannel(channel);
-				
-				Command cmd = new Command();
-				cmd.executeCommand(args);
-				
-			}
+		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
 	}
 	
 	public void setBotName(String botName){
