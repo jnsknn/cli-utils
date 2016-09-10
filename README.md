@@ -13,7 +13,7 @@ Arguments are separated with space.
 - ?rtimer [arg((int)time (char)h/m/s) arg(Timer name)...arg(Timer name)] sets repeating timer
 - ?timer with no arguments lists all set timers
 - ?rmtimer [arg((int)id)] removes timer
-- ?exit disconnects irc and quits the main program
+- ?exit disconnects irc if bot is connected to a server. Quits the main program if bot is offline
 - ?help posts link to this file
 
 # Examples
