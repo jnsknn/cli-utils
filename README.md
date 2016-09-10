@@ -26,7 +26,8 @@ Arguments are separated with space.
 
 - Input: ?irc Jbot irc.elisa.fi #CHANNELNAME
 	- Output: Connecting to irc.elisa.fi...
-	- You can also speak to channel when bot is connected by typing: #CHANNELNAME hello
+
+You can also speak to channel when bot is connected by typing: #CHANNELNAME hello
 
 - Input: ?timer 2h20m30s go to work
 	- Output: Your timer [go to work] has been set for 2 hours and 20 minutes and 30 seconds!
