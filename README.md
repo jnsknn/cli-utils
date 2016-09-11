@@ -9,7 +9,8 @@ Arguments are separated with space.
 - ?calculate [arg] calculates result from given string using JavaScript engine
 - ?ufo [arg...arg] creates weird name based on given strings
 - ?irc [arg(BotName) arg(server) arg(#Channel)] connects to irc
-- ?timer [arg((int)time (char)h/m/s) arg(Timer name)...arg(Timer name)] sets timer
+- ?timer [arg((int)time (char)h/m/s) arg(Timer name)...arg(Timer name)] sets timer. Timers are saved to timerinfos.json when adding or removing timers
+- ?ptimer same as timer but it sends reminders in tell messages if used when IRCBot is online
 - ?rtimer [arg((int)time (char)h/m/s) arg((int)delay (char)h/m/s) arg(Timer name)...arg(Timer name)] sets repeating timer
 - ?timer with no arguments lists all set timers
 - ?rmtimer [arg((int)id)] removes timer
@@ -61,9 +62,9 @@ You can make playlist by posting youtube links into chat
 - Input: ?playlist
 	- Output: https://www.youtube.com/watch_videos?video_ids=oSOd8lnGfcE,XmLSeuJE_Ds,N4pj7RByIeA
 	
--Input: ?clplaylist
+-Input: ?clrplaylist
 	- Output: Playlist cleared!
 
-# Dependencies
+# External dependencies
 
 - PircBot http://www.jibble.org/pircbot.php

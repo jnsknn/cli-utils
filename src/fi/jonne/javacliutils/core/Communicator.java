@@ -31,10 +31,11 @@ public class Communicator {
 	}
 	
 	public void handleInput(String input){
-		
+				
+		input = input.trim();
 		String inputStringArr[] = input.split(":");
 		
-		if(input.startsWith("?")){
+		if(input.substring(0, 1).equalsIgnoreCase("?")){
 			input = input.substring(1);
 			String[] args = input.split(" ");
 			
@@ -43,7 +44,7 @@ public class Communicator {
 			cmd.executeCommand(args);
 			
 		}
-		else if(!IRCBot.getInstance().isConnected() && input.startsWith("#")){
+		else if(!IRCBot.getInstance().isConnected() && input.substring(0, 1).equalsIgnoreCase("#")){
 			String[] args = input.split(" ");
 			
 			channel = args[0];
@@ -54,7 +55,7 @@ public class Communicator {
 				handleError("handleInput() error: " + e.getMessage());
 			}
 		}
-		else if(inputStringArr.length > 1 && input.split(":")[1].trim().startsWith("?")){
+		else if(inputStringArr.length > 1 && input.split(":")[1].trim().substring(0, 1).equalsIgnoreCase("?")){
 			
 			input = input.split(":")[1].trim().substring(1);
 			String[] args = input.split(" ");

@@ -37,6 +37,8 @@ public class IRCBot extends PircBot{
 		Communicator.getInstance().setSender(sender);
 		Communicator.getInstance().setChannel(channel);
 		
+		Communicator.getInstance().handleInput(message);
+		
 		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
 	}
 	

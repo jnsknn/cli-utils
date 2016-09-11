@@ -172,34 +172,59 @@ public enum ECommands implements ICommands {
 		public void execute(String[] args) {
 			if(args.length > 1){
 				
-				TimerInfo timer;
-				
 				if(!IRCBot.getInstance().isConnected()){
-					timer = new TimerInfo(args[1], "0s", getInputStringFromArgs(args), false);						
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args), false);						
 				}else{
-					timer = new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
 							Communicator.getInstance().getSender(),
 							Communicator.getInstance().getChannel(), false);
-				}
-				
-				//Check if timer thread started correctly
-				if(timer.isTimerRunning){
-					TimerInfoContainer.getInstance().setTimer(timer);
 				}
 				
 			}else if(args.length == 1){
 				
 				if(TimerInfoContainer.getInstance().getTimers().size() < 1){
-					Communicator.getInstance().handleOutput("No timers set. Use ?timer [(int)time (char)h/m/s] [timer name] to set a timer");
+					Communicator.getInstance().handleOutput("No timers set");
 				}else{						
 					String timers = "";
 					
 					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
-						
-						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime(timer.getValue().time) + " remaining!<<";
-						
+						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime(timer.getValue().time, false) + " remaining!<<";
 					}
 					Communicator.getInstance().handleOutput(timers);
+				}
+			}
+		}
+	},
+	PTIMER {
+		public boolean isCommand(String[] args){
+			if(args[0].toLowerCase().startsWith("ptimer") && args.length >= 1){
+				return true;
+			}
+			return false;
+		}
+		public String getInputStringFromArgs(String[] args){
+			String inputString = "";
+			
+			for(int i = 2; i < args.length; i++){
+				inputString += args[i]+" ";
+			}
+			
+			return inputString.trim();
+		}
+		public boolean isAuthorized(String sender){
+			return true;
+		}
+		public void execute(String[] args) {
+			if(args.length > 1){
+				
+				if(!IRCBot.getInstance().isConnected()){
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args), false);						
+				}else{
+					
+					// This timer is personal, so set channel as sender!
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
+							Communicator.getInstance().getSender(),
+							Communicator.getInstance().getSender(), false);
 				}
 			}
 		}
@@ -228,10 +253,11 @@ public enum ECommands implements ICommands {
 			int id = Integer.valueOf(getInputStringFromArgs(args));
 			
 			if(TimerInfoContainer.getInstance().isTimerExist(id)){
-				TimerInfo timer = TimerInfoContainer.getInstance().getTimer(id);
-				timer.isTimerRunning = false;
+				TimerInfo timer = TimerInfoContainer.getInstance().getTimer(id);				
+				Communicator.getInstance().handleOutput(timer.owner + ", your timer [" + timer.id + "] [" + timer.name + "] has been removed!");
+				TimerInfoContainer.getInstance().removeTimer(timer);
 			}else{
-				Communicator.getInstance().handleOutput("No timer " + String.valueOf(id) + " found. Use ?rmtimer [(int)id] to remove a timer");
+				Communicator.getInstance().handleOutput("No timer [" + String.valueOf(id)+ "] found");
 			}
 		}
 	},
@@ -256,19 +282,12 @@ public enum ECommands implements ICommands {
 		}
 		public void execute(String[] args) {
 			
-			TimerInfo timer;
-			
 			if(!IRCBot.getInstance().isConnected()){
-				timer = new TimerInfo(args[1], args[2], getInputStringFromArgs(args), true);						
+				new TimerInfo(args[1], args[2], getInputStringFromArgs(args), true);						
 			}else{
-				timer = new TimerInfo(args[1], args[2], getInputStringFromArgs(args),
+				new TimerInfo(args[1], args[2], getInputStringFromArgs(args),
 						Communicator.getInstance().getSender(),
 						Communicator.getInstance().getChannel(), true);
-			}
-			
-			//Check if timer thread started correctly
-			if(timer.isTimerRunning){
-				TimerInfoContainer.getInstance().setTimer(timer);
 			}
 		}
 	},
@@ -320,9 +339,9 @@ public enum ECommands implements ICommands {
 			}
 		}
 	},
-	CLPLAYLIST {
+	CLRPLAYLIST {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("clplaylist")){
+			if(args[0].toLowerCase().startsWith("clrplaylist")){
 				return true;
 			}
 			return false;
