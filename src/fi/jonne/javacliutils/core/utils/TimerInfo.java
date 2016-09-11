@@ -36,14 +36,13 @@ public class TimerInfo extends TimerTask{
 	public TimerInfo(int id, long timerStart, long timerEnd,
 			String timerName, String timerOwner, String timerChannel, boolean isRepeating){
 		
-		if(isRepeating){
+		this.time = timerEnd - System.currentTimeMillis();
+		
+		if(this.time < 0L && isRepeating){
 			this.time = timerEnd - timerStart;
-		}else{
-			this.time = timerEnd - System.currentTimeMillis();			
 		}
 		
-		if(this.time > 0L){
-		
+		if(this.time > 0L){			
 			this.id = id;
 			this.timeStampStart = timerStart;
 			this.timeStampEnd = timerEnd;
@@ -59,8 +58,9 @@ public class TimerInfo extends TimerTask{
 			this.channel = timerChannel;
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
-			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
+			
 			TimerInfoContainer.getInstance().setTimer(this);
+			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 		}
 		
 	}
@@ -91,7 +91,6 @@ public class TimerInfo extends TimerTask{
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			
-			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 			TimerInfoContainer.getInstance().setTimer(this);
 			
 			if(!this.isTimerRepeating){
@@ -99,6 +98,8 @@ public class TimerInfo extends TimerTask{
 			}else{
 				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
+			
+			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 		}
 	}
 	
@@ -125,7 +126,6 @@ public class TimerInfo extends TimerTask{
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 
-			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 			TimerInfoContainer.getInstance().setTimer(this);
 			
 			if(!this.isTimerRepeating){
@@ -133,6 +133,8 @@ public class TimerInfo extends TimerTask{
 			}else{
 				Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time,true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
+			
+			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 		}
 	}
 

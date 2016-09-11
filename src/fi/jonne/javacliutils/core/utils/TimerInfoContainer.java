@@ -108,7 +108,7 @@ public class TimerInfoContainer {
 		Communicator.getInstance().handleOutput("Initializing timers...");
 		JSONParser parser = new JSONParser();
 		
-		int i = 0;
+		int i = -1;
 		
 		try {
 

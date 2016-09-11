@@ -188,7 +188,13 @@ public enum ECommands implements ICommands {
 					String timers = "";
 					
 					for(Map.Entry<Integer, TimerInfo> timer : TimerInfoContainer.getInstance().getTimers().entrySet()){
-						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime(timer.getValue().time, false) + " remaining!<<";
+						timers += ">>Timer [" + timer.getValue().id + "] [" + timer.getValue().name + "] for " + timer.getValue().owner + " has " + timer.getValue().parseTimeStringFromTime(timer.getValue().time, false) + " remaining";
+						
+						if(timer.getValue().isTimerRepeating){
+							timers += " and is repeated every " + timer.getValue().parseTimeStringFromTime(timer.getValue().timeStampEnd - timer.getValue().timeStampStart, true) + "!<<";
+						}else{
+							timers += "!<<";
+						}
 					}
 					Communicator.getInstance().handleOutput(timers);
 				}
@@ -226,6 +232,7 @@ public enum ECommands implements ICommands {
 							Communicator.getInstance().getSender(),
 							Communicator.getInstance().getSender(), false);
 				}
+				Communicator.getInstance().handleOutput("Personal timer set");
 			}
 		}
 	},
