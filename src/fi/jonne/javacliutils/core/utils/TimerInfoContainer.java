@@ -35,7 +35,7 @@ public class TimerInfoContainer {
 	}
 	
 	public void setTimer(TimerInfo timerInfo){
-		timerInfos.put(getNextId(), timerInfo);
+		timerInfos.put(timerInfo.id, timerInfo);
 		saveTimers();
 	}
 	
@@ -108,8 +108,6 @@ public class TimerInfoContainer {
 		Communicator.getInstance().handleOutput("Initializing timers...");
 		JSONParser parser = new JSONParser();
 		
-		int i = -1;
-		
 		try {
 
 			Object obj = parser.parse(new FileReader("timerinfos.json"));
@@ -131,18 +129,21 @@ public class TimerInfoContainer {
 				
 				new TimerInfo(id, timeStampStart, timeStampEnd, name, owner, channel, isTimerRepeating);
 				
-				i++;
+				nextId = id;
 			}
-			
-			nextId = i;
-
+			Communicator.getInstance().handleOutput("[OK]");
 		}catch (FileNotFoundException e) {
 			Communicator.getInstance().handleError("initializeTimers error: " + e.getMessage());
+			Communicator.getInstance().handleError("Writing timerinfos.json file to JavaCLIUtils root folder...");
+			saveTimers();
+			Communicator.getInstance().handleOutput("[OK]");
 		}catch (IOException e) {
-			Communicator.getInstance().handleError("initializeTimers error: " + e.getMessage());
+			Communicator.getInstance().handleError("initializeTimers IO error: " + e.getMessage());
 		}catch (ParseException e) {
-			Communicator.getInstance().handleError("initializeTimers error: " + e.getMessage());
+			Communicator.getInstance().handleError("initializeTimers parse error: " + e.getMessage());
+			Communicator.getInstance().handleError("Writing new timerinfos.json file to JavaCLIUtils root folder...");
+			saveTimers();
+			Communicator.getInstance().handleOutput("[OK]");
 		}
-		Communicator.getInstance().handleOutput("[OK]");
 	}
 }

@@ -232,7 +232,6 @@ public enum ECommands implements ICommands {
 							Communicator.getInstance().getSender(),
 							Communicator.getInstance().getSender(), false);
 				}
-				Communicator.getInstance().handleOutput("Personal timer set");
 			}
 		}
 	},
