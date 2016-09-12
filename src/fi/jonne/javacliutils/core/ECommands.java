@@ -128,17 +128,17 @@ public enum ECommands implements ICommands {
 					IRCBot.getInstance().setEncoding("UTF-8");
 					
 					Communicator.getInstance()
-					.handleOutput("Connecting to " + args[2] + "...");
+					.printOutput("Connecting to " + args[2] + "...");
 					
 					IRCBot.getInstance().connect(args[2]);
 					
 					Communicator.getInstance()
-					.handleOutput("[OK]");
+					.printOutput("[OK]");
 					Communicator.getInstance()
-					.handleOutput("Joining channel " + args[3] + "...");
+					.printOutput("Joining channel " + args[3] + "...");
 					IRCBot.getInstance().joinChannel(args[3]);
 					Communicator.getInstance()
-					.handleOutput("[OK]");
+					.printOutput("[OK]");
 					
 					if(IRCBot.getInstance().isConnected()){
 						IRCBot.getInstance().setVerbose(false);
@@ -152,7 +152,7 @@ public enum ECommands implements ICommands {
 	},
 	TIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("timer") && args.length >= 1){
+			if(args[0].toLowerCase().startsWith("ti") && args.length >= 1){
 				return true;
 			}
 			return false;
@@ -203,7 +203,7 @@ public enum ECommands implements ICommands {
 	},
 	PTIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("ptimer") && args.length >= 1){
+			if(args[0].toLowerCase().startsWith("pti") && args.length >= 1){
 				return true;
 			}
 			return false;
@@ -237,7 +237,7 @@ public enum ECommands implements ICommands {
 	},
 	RMTIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("rmtimer") && args.length == 2){
+			if(args[0].toLowerCase().startsWith("rmti") && args.length == 2){
 				return true;
 			}
 			return false;
@@ -269,7 +269,7 @@ public enum ECommands implements ICommands {
 	},
 	RTIMER {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("rtimer") && args.length >= 4){
+			if(args[0].toLowerCase().startsWith("rti") && args.length >= 3){
 				return true;
 			}
 			return false;
@@ -322,7 +322,7 @@ public enum ECommands implements ICommands {
 	},
 	PLAYLIST {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("playlist")){
+			if(args[0].toLowerCase().startsWith("pl")){
 				return true;
 			}
 			return false;
@@ -347,7 +347,7 @@ public enum ECommands implements ICommands {
 	},
 	CLRPLAYLIST {
 		public boolean isCommand(String[] args){
-			if(args[0].toLowerCase().startsWith("clrplaylist")){
+			if(args[0].toLowerCase().startsWith("clrpl")){
 				return true;
 			}
 			return false;
@@ -367,7 +367,7 @@ public enum ECommands implements ICommands {
 		public void execute(String[] args) {
 			if(args.length == 1){
 				Playlist.getInstance().clearPlaylist();
-				Communicator.getInstance().handleOutput("Playlist cleared!");
+				Communicator.getInstance().handleOutput("Playlist cleared");
 			}
 		}
 	};

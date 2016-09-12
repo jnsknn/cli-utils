@@ -1,5 +1,8 @@
 package fi.jonne.javacliutils.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import fi.jonne.javacliutils.core.utils.IRCBot;
 import fi.jonne.javacliutils.core.utils.Playlist;
 
@@ -7,8 +10,8 @@ public class Communicator {
 	
 	private static Communicator instance;
 	
-	protected String sender = "Local";
-	protected String channel;
+	protected String sender = "JavaCLIUtils";
+	protected String channel = "Local";
 	
 	public Communicator(){}
 	
@@ -21,11 +24,15 @@ public class Communicator {
 	
 	public void handleOutput(String output){
 		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		String timeStamp = sdf.format(date);
+		
 		if(output.length() > 0 && output != null){			
 			if(IRCBot.getInstance().isConnected()){
 				IRCBot.getInstance().sendMessage(channel, output);
 			}else{
-				System.out.println(output);			
+				System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);			
 			}
 		}
 	}
@@ -44,7 +51,7 @@ public class Communicator {
 			cmd.executeCommand(args);
 			
 		}
-		else if(!IRCBot.getInstance().isConnected() && input.substring(0, 1).equalsIgnoreCase("#")){
+		else if(IRCBot.getInstance().isConnected() && input.substring(0, 1).equalsIgnoreCase("#")){
 			String[] args = input.split(" ");
 			
 			channel = args[0];
@@ -77,7 +84,21 @@ public class Communicator {
 	}
 	
 	public void handleError(String error){
-		System.err.println(error);
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		String timeStamp = sdf.format(date);
+		
+		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " | " + error);
+	}
+	
+	public void printOutput(String output){
+		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		String timeStamp = sdf.format(date);
+		
+		System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);
 	}
 	
 	public void setSender(String senderStr){

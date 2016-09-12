@@ -38,20 +38,31 @@ public class TimerInfo extends TimerTask{
 		
 		this.time = timerEnd - System.currentTimeMillis();
 		
-		if(this.time < 0L && isRepeating){
-			this.time = timerEnd - timerStart;
+		// Set delay if there is any delay left
+		this.delay = timerStart - System.currentTimeMillis();
+		
+		if(this.delay <= 0L){
+			this.delay = 0L;
+		}
+
+		this.timeStampStart = timerStart;
+		this.timeStampEnd = timerEnd;
+		
+		//If timer has ended and timer was defined as repeating, then shift start and end time stamp and set new time
+		if(this.time <= 0L && isRepeating){
+			
+			// Offline time to determine how long time has passed since timer stamp end
+			long offlineTime = Math.abs(this.time);
+			
+			this.time = (timerEnd - timerStart);
+			this.timeStampStart = System.currentTimeMillis() + this.delay;
+			this.timeStampEnd = this.timeStampStart + this.time;
 		}
 		
+		// Set timer if there is any time left
 		if(this.time > 0L){			
+			
 			this.id = id;
-			this.timeStampStart = timerStart;
-			this.timeStampEnd = timerEnd;
-			
-			this.delay = timerStart - System.currentTimeMillis();
-			
-			if(this.delay <= 0L){
-				this.delay = 0L;
-			}
 			
 			this.name = timerName;
 			this.owner = timerOwner;
@@ -60,6 +71,20 @@ public class TimerInfo extends TimerTask{
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			
 			TimerInfoContainer.getInstance().setTimer(this);
+			
+			if(this.isTimerRepeating){
+				
+				String msg = "Timer [" + this.id + "] [" + this.name + "] for " + this.owner + " has been initialized and scheduled to repeat every " + parseTimeStringFromTime(timerEnd - timerStart, true);
+				
+				if(this.delay > 0L){
+					msg += " in " + parseTimeStringFromTime(this.delay, true) + "!";
+				}else{
+					msg += "!";
+				}
+				
+				Communicator.getInstance().handleOutput(msg);
+			}
+			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 		}
 		
@@ -93,9 +118,7 @@ public class TimerInfo extends TimerTask{
 			
 			TimerInfoContainer.getInstance().setTimer(this);
 			
-			if(!this.isTimerRepeating){
-				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time, true) + "!");				
-			}else{
+			if(this.isTimerRepeating){
 				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
 			
@@ -128,10 +151,8 @@ public class TimerInfo extends TimerTask{
 
 			TimerInfoContainer.getInstance().setTimer(this);
 			
-			if(!this.isTimerRepeating){
-				Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time, true) + "!");				
-			}else{
-				Communicator.getInstance().handleOutput("Your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time,true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
+			if(this.isTimerRepeating){
+				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
 			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
@@ -263,6 +284,13 @@ public class TimerInfo extends TimerTask{
 	@Override
 	public void run() {
 		
+		if(this.time == (this.timeStampEnd - this.timeStampStart)){
+			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time, true) + "!");				
+		}
+		else if(this.isTimerRepeating && this.time <= 0L){
+			this.time = this.timeStampEnd - this.timeStampStart;
+		}
+		
 		this.time -= PERIOD;
 		
 		// Send message if timer...
@@ -284,9 +312,10 @@ public class TimerInfo extends TimerTask{
 			if(!this.isTimerRepeating){
 				TimerInfoContainer.getInstance().removeTimer(this);
 			}else{
-				this.time = this.timeStampEnd - this.timeStampStart;
-				msg += " and set again for " + parseTimeStringFromTime(this.time, true);
+				msg += " and set again for " + parseTimeStringFromTime(this.timeStampEnd - this.timeStampStart, true);
 			}
+			
+			msg += "!";
 
 			// This is automated message, so set channel!
 			Communicator.getInstance().setChannel(this.channel);

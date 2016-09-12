@@ -1,8 +1,5 @@
 package fi.jonne.javacliutils.core.utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.jibble.pircbot.PircBot;
 
 import fi.jonne.javacliutils.core.Communicator;
@@ -29,17 +26,12 @@ public class IRCBot extends PircBot{
 	public void onMessage(String channel, String sender,
             String login, String hostname, String message) {
 		
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-		String timeStamp = sdf.format(date);
-		
 		// Let IRCBot take care who to serve by setting sender and channel for communicator
 		Communicator.getInstance().setSender(sender);
 		Communicator.getInstance().setChannel(channel);
 		
 		Communicator.getInstance().handleInput(message);
-		
-		System.out.println( "[" + timeStamp + "] " + channel + " " + sender + "|" + message);
+		Communicator.getInstance().printOutput(message);
 	}
 	
 	public void setBotName(String botName){
