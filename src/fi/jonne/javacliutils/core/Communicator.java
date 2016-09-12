@@ -5,13 +5,11 @@ import java.util.Date;
 
 import fi.jonne.javacliutils.core.utils.IRCBot;
 import fi.jonne.javacliutils.core.utils.Playlist;
+import fi.jonne.javacliutils.settings.Settings;
 
 public class Communicator {
 	
 	private static Communicator instance;
-	
-	protected String sender = "JavaCLIUtils";
-	protected String channel = "Local";
 	
 	public Communicator(){}
 	
@@ -22,7 +20,7 @@ public class Communicator {
 		return instance;
 	}
 	
-	public void handleOutput(String output){
+	public void handleOutput(String channel, String sender, String output){
 		
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -37,7 +35,7 @@ public class Communicator {
 		}
 	}
 	
-	public void handleInput(String input){
+	public void handleInput(String channel, String sender, String input){
 				
 		input = input.trim();
 		String inputStringArr[] = input.split(":");
@@ -48,7 +46,7 @@ public class Communicator {
 			
 			Command cmd = new Command();
 			
-			cmd.executeCommand(args);
+			cmd.executeCommand(channel, sender, args);
 			
 		}
 		else if(IRCBot.getInstance().isConnected() && input.substring(0, 1).equalsIgnoreCase("#")){
@@ -57,9 +55,11 @@ public class Communicator {
 			channel = args[0];
 			
 			try{
-				handleOutput(ECommands.IRC.getInputStringFromArgs(args));
+				if(ECommands.IRC.isAuthorized(sender)){
+					handleOutput(channel, sender, ECommands.IRC.getInputStringFromArgs(args));					
+				}
 			}catch(Exception e){
-				handleError("handleInput() error: " + e.getMessage());
+				handleError(Settings.DEFAULT_SENDER, Settings.DEFAULT_CHANNEL, "handleInput() error: " + e.getMessage());
 			}
 		}
 		else if(inputStringArr.length > 1 && input.split(":")[1].trim().substring(0, 1).equalsIgnoreCase("?")){
@@ -68,7 +68,7 @@ public class Communicator {
 			String[] args = input.split(" ");
 			
 			Command cmd = new Command();
-			cmd.executeCommand(args);
+			cmd.executeCommand(channel, sender, args);
 			
 		}
 
@@ -83,7 +83,7 @@ public class Communicator {
 		}
 	}
 	
-	public void handleError(String error){
+	public void handleError(String channel, String sender, String error){
 
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -92,28 +92,12 @@ public class Communicator {
 		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " | " + error);
 	}
 	
-	public void printOutput(String output){
+	public void printOutput(String channel, String sender, String output){
 		
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		String timeStamp = sdf.format(date);
 		
 		System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);
-	}
-	
-	public void setSender(String senderStr){
-		sender = senderStr;
-	}
-	
-	public String getSender(){
-		return sender;
-	}
-	
-	public void setChannel(String channelStr){
-		channel = channelStr;
-	}
-	
-	public String getChannel(){
-		return channel;
 	}
 }

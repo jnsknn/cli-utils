@@ -8,6 +8,7 @@ import fi.jonne.javacliutils.core.utils.Playlist;
 import fi.jonne.javacliutils.core.utils.TimerInfo;
 import fi.jonne.javacliutils.core.utils.TimerInfoContainer;
 import fi.jonne.javacliutils.core.utils.UfoName;
+import fi.jonne.javacliutils.settings.Settings;
 
 /**
  * This enum contains all core commands and their implementations
@@ -32,9 +33,9 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			Communicator.getInstance()
-			.handleOutput(Calculator.getInstance()
+			.handleOutput(channel, sender, Calculator.getInstance()
 					.calculate(getInputStringFromArgs(args)));
 		}
 	},
@@ -57,9 +58,9 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			Communicator.getInstance()
-			.handleOutput(new UfoName(getInputStringFromArgs(args)).name);
+			.handleOutput(channel, sender, new UfoName(getInputStringFromArgs(args)).name);
 		}
 	},
 	EXIT {
@@ -86,7 +87,7 @@ public enum ECommands implements ICommands {
 			}
 			return false;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(IRCBot.getInstance().isConnected()){					
 				IRCBot.getInstance().quitServer("Disconnecting...");
 			}else{
@@ -118,34 +119,35 @@ public enum ECommands implements ICommands {
 			}
 			return false;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(!IRCBot.getInstance().isConnected()){
 				
 				IRCBot.getInstance().setBotName(args[1]);
+				Settings.DEFAULT_SENDER = args[1];
 				
 				try{
 					IRCBot.getInstance().setVerbose(true);
 					IRCBot.getInstance().setEncoding("UTF-8");
 					
 					Communicator.getInstance()
-					.printOutput("Connecting to " + args[2] + "...");
+					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Connecting to " + args[2] + "...");
 					
 					IRCBot.getInstance().connect(args[2]);
 					
 					Communicator.getInstance()
-					.printOutput("[OK]");
+					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
 					Communicator.getInstance()
-					.printOutput("Joining channel " + args[3] + "...");
+					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Joining channel " + args[3] + "...");
 					IRCBot.getInstance().joinChannel(args[3]);
 					Communicator.getInstance()
-					.printOutput("[OK]");
+					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
 					
 					if(IRCBot.getInstance().isConnected()){
 						IRCBot.getInstance().setVerbose(false);
 					}
 					
 				}catch(Exception e){
-					Communicator.getInstance().handleError("IRC ERROR: " + e.getMessage());
+					Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "IRC ERROR: " + e.getMessage());
 				}
 			}
 		}
@@ -169,21 +171,19 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(args.length > 1){
 				
 				if(!IRCBot.getInstance().isConnected()){
 					new TimerInfo(args[1], "0s", getInputStringFromArgs(args), false);						
 				}else{
-					new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
-							Communicator.getInstance().getSender(),
-							Communicator.getInstance().getChannel(), false);
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args), sender, channel, false);
 				}
 				
 			}else if(args.length == 1){
 				
 				if(TimerInfoContainer.getInstance().getTimers().size() < 1){
-					Communicator.getInstance().handleOutput("No timers set");
+					Communicator.getInstance().handleOutput(channel, sender, "No timers set");
 				}else{						
 					String timers = "";
 					
@@ -196,7 +196,7 @@ public enum ECommands implements ICommands {
 							timers += "!<<";
 						}
 					}
-					Communicator.getInstance().handleOutput(timers);
+					Communicator.getInstance().handleOutput(channel, sender, timers);
 				}
 			}
 		}
@@ -220,7 +220,7 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(args.length > 1){
 				
 				if(!IRCBot.getInstance().isConnected()){
@@ -228,9 +228,7 @@ public enum ECommands implements ICommands {
 				}else{
 					
 					// This timer is personal, so set channel as sender!
-					new TimerInfo(args[1], "0s", getInputStringFromArgs(args),
-							Communicator.getInstance().getSender(),
-							Communicator.getInstance().getSender(), false);
+					new TimerInfo(args[1], "0s", getInputStringFromArgs(args), sender, sender, false);
 				}
 			}
 		}
@@ -254,16 +252,16 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			
 			int id = Integer.valueOf(getInputStringFromArgs(args));
 			
 			if(TimerInfoContainer.getInstance().isTimerExist(id)){
 				TimerInfo timer = TimerInfoContainer.getInstance().getTimer(id);				
-				Communicator.getInstance().handleOutput(timer.owner + ", your timer [" + timer.id + "] [" + timer.name + "] has been removed!");
+				Communicator.getInstance().handleOutput(timer.channel, timer.owner, timer.owner + ", your timer [" + timer.id + "] [" + timer.name + "] has been removed!");
 				TimerInfoContainer.getInstance().removeTimer(timer);
 			}else{
-				Communicator.getInstance().handleOutput("No timer [" + String.valueOf(id)+ "] found");
+				Communicator.getInstance().handleOutput(channel, sender, "No timer [" + String.valueOf(id)+ "] found");
 			}
 		}
 	},
@@ -286,14 +284,12 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			
 			if(!IRCBot.getInstance().isConnected()){
 				new TimerInfo(args[1], args[2], getInputStringFromArgs(args), true);						
 			}else{
-				new TimerInfo(args[1], args[2], getInputStringFromArgs(args),
-						Communicator.getInstance().getSender(),
-						Communicator.getInstance().getChannel(), true);
+				new TimerInfo(args[1], args[2], getInputStringFromArgs(args), sender, channel, true);
 			}
 		}
 	},
@@ -316,8 +312,8 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
-			Communicator.getInstance().handleOutput("https://github.com/jnsknn/java-cli-utils/blob/master/README.md");
+		public void execute(String channel, String sender, String[] args) {
+			Communicator.getInstance().handleOutput(channel, sender, "https://github.com/jnsknn/java-cli-utils/blob/master/README.md");
 		}
 	},
 	PLAYLIST {
@@ -339,9 +335,9 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(args.length == 1){				
-				Communicator.getInstance().handleOutput(Playlist.getInstance().getPlaylistURL());
+				Communicator.getInstance().handleOutput(channel, sender, Playlist.getInstance().getPlaylistURL());
 			}
 		}
 	},
@@ -364,10 +360,10 @@ public enum ECommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
+		public void execute(String channel, String sender, String[] args) {
 			if(args.length == 1){
 				Playlist.getInstance().clearPlaylist();
-				Communicator.getInstance().handleOutput("Playlist cleared");
+				Communicator.getInstance().handleOutput(channel, sender, "Playlist cleared");
 			}
 		}
 	};

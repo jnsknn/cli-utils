@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import fi.jonne.javacliutils.core.Communicator;
 import fi.jonne.javacliutils.core.utils.TimerInfoContainer;
+import fi.jonne.javacliutils.settings.Settings;
 
 public class JavaCLIUtilsMain {
 	
@@ -16,7 +17,7 @@ public class JavaCLIUtilsMain {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		while(true){
-			Communicator.getInstance().handleInput(br.readLine());
+			Communicator.getInstance().handleInput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, br.readLine());
 		}
 		
 	}

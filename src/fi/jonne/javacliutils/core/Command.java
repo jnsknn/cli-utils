@@ -8,19 +8,19 @@ public class Command {
 	
 	public Command(){}
 	
-	public void executeCommand(String[] args){
+	public void executeCommand(String channel, String sender, String[] args){
 		for(ECommands cmd : ECommands.values()){
-			if(cmd.isCommand(args) && cmd.isAuthorized(Communicator.getInstance().getSender())){
-				cmd.execute(args);
+			if(cmd.isCommand(args) && cmd.isAuthorized(sender)){
+				cmd.execute(channel, sender, args);
 				return;
 			}
 		}
 		for(EAOCommands cmd : EAOCommands.values()){
-			if(cmd.isCommand(args) && cmd.isAuthorized(Communicator.getInstance().getSender())){
-				cmd.execute(args);
+			if(cmd.isCommand(args) && cmd.isAuthorized(sender)){
+				cmd.execute(channel, sender, args);
 				return;
 			}
 		}
-		ECommands.HELP.execute(null);
+		ECommands.HELP.execute(channel, sender, null);
 	}
 }

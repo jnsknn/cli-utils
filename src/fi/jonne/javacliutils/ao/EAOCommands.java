@@ -26,8 +26,8 @@ public enum EAOCommands implements ICommands {
 		public boolean isAuthorized(String sender){
 			return true;
 		}
-		public void execute(String[] args) {
-			Communicator.getInstance().handleOutput("/fxscript Tweak_Rubi-Ka_Sunlight #");
+		public void execute(String channel, String sender, String[] args) {
+			Communicator.getInstance().handleOutput(channel, sender, "/fxscript Tweak_Rubi-Ka_Sunlight #");
 		}
 	};
 }

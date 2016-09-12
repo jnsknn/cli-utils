@@ -26,12 +26,8 @@ public class IRCBot extends PircBot{
 	public void onMessage(String channel, String sender,
             String login, String hostname, String message) {
 		
-		// Let IRCBot take care who to serve by setting sender and channel for communicator
-		Communicator.getInstance().setSender(sender);
-		Communicator.getInstance().setChannel(channel);
-		
-		Communicator.getInstance().handleInput(message);
-		Communicator.getInstance().printOutput(message);
+		Communicator.getInstance().handleInput(channel, sender, message);
+		Communicator.getInstance().printOutput(channel, sender, message);
 	}
 	
 	public void setBotName(String botName){

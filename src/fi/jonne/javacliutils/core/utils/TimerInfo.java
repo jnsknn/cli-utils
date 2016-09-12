@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import fi.jonne.javacliutils.core.Communicator;
 import fi.jonne.javacliutils.core.ECommands;
+import fi.jonne.javacliutils.settings.Settings;
 
 public class TimerInfo extends TimerTask{
 	
@@ -20,8 +21,8 @@ public class TimerInfo extends TimerTask{
 	}};
 	
 	public String name = "timer";
-	public String owner = "You";
-	public String channel;
+	public String owner = Settings.DEFAULT_SENDER;
+	public String channel = Settings.DEFAULT_CHANNEL;
 	public long timeStampStart;
 	public long timeStampEnd;
 	public long time;
@@ -36,10 +37,10 @@ public class TimerInfo extends TimerTask{
 	public TimerInfo(int id, long timerStart, long timerEnd,
 			String timerName, String timerOwner, String timerChannel, boolean isRepeating){
 		
-		this.time = timerEnd - System.currentTimeMillis();
+		this.time = timerEnd - getCurrentTime();
 		
 		// Set delay if there is any delay left
-		this.delay = timerStart - System.currentTimeMillis();
+		this.delay = timerStart - getCurrentTime();
 		
 		if(this.delay <= 0L){
 			this.delay = 0L;
@@ -47,20 +48,19 @@ public class TimerInfo extends TimerTask{
 
 		this.timeStampStart = timerStart;
 		this.timeStampEnd = timerEnd;
-		
+
 		//If timer has ended and timer was defined as repeating, then shift start and end time stamp and set new time
 		if(this.time <= 0L && isRepeating){
 			
 			// Offline time to determine how long time has passed since timer stamp end
-			long offlineTime = Math.abs(this.time);
+			long offlineTime = -this.time;
 			
-			this.time = (timerEnd - timerStart);
-			this.timeStampStart = System.currentTimeMillis() + this.delay;
-			this.timeStampEnd = this.timeStampStart + this.time;
+			// How many sequences of original time can fit to offline time and put time left to this time
+			this.time = offlineTime % (timerEnd - timerStart);
 		}
 		
 		// Set timer if there is any time left
-		if(this.time > 0L){			
+		if(this.time >= 0L){			
 			
 			this.id = id;
 			
@@ -70,22 +70,22 @@ public class TimerInfo extends TimerTask{
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			
-			TimerInfoContainer.getInstance().setTimer(this);
+			String msg = "Timer [" + this.id + "] [" + this.name + "] for " + this.owner + " has " + parseTimeStringFromTime(this.time, true) + " left";
 			
-			if(this.isTimerRepeating){
+			if(this.isTimerRepeating){		
 				
-				String msg = "Timer [" + this.id + "] [" + this.name + "] for " + this.owner + " has been initialized and scheduled to repeat every " + parseTimeStringFromTime(timerEnd - timerStart, true);
+				msg += " and scheduled to repeat every " + parseTimeStringFromTime(this.timeStampEnd - this.timeStampStart, true);
 				
 				if(this.delay > 0L){
-					msg += " in " + parseTimeStringFromTime(this.delay, true) + "!";
-				}else{
-					msg += "!";
-				}
-				
-				Communicator.getInstance().handleOutput(msg);
-			}
+					msg += " in " + parseTimeStringFromTime(this.delay, true);
+				}				
+			}			
 			
+			msg += "!";
+			
+			Communicator.getInstance().handleOutput(this.channel, this.owner, msg);
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
+			TimerInfoContainer.getInstance().setTimer(this);
 		}
 		
 	}
@@ -110,19 +110,19 @@ public class TimerInfo extends TimerTask{
 			
 			this.delay = parseTimeFromTimerString(timerDelay);
 			
-			this.timeStampStart = System.currentTimeMillis() + this.delay;
+			this.timeStampStart = getCurrentTime() + this.delay;
 			this.timeStampEnd = this.timeStampStart + this.time;
 
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 			
-			TimerInfoContainer.getInstance().setTimer(this);
 			
 			if(this.isTimerRepeating){
-				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
+				Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
 			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
+			TimerInfoContainer.getInstance().setTimer(this);
 		}
 	}
 	
@@ -143,19 +143,19 @@ public class TimerInfo extends TimerTask{
 			
 			this.delay = parseTimeFromTimerString(timerDelay);
 			
-			this.timeStampStart = System.currentTimeMillis() + this.delay;
+			this.timeStampStart = getCurrentTime() + this.delay;
 			this.timeStampEnd = this.timeStampStart + this.time;
 			
 			this.isTimerRepeating = isRepeating;
 			this.timer = new Timer(this.name  + "-" + String.valueOf(this.id));
 
-			TimerInfoContainer.getInstance().setTimer(this);
 			
 			if(this.isTimerRepeating){
-				Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
+				Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
 			}
 			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
+			TimerInfoContainer.getInstance().setTimer(this);
 		}
 	}
 
@@ -213,12 +213,12 @@ public class TimerInfo extends TimerTask{
 				);
 			
 			if(!charFound){
-				ECommands.HELP.execute(null);
+				return 0L;
 			}
 			
 			return parsedTimeLong;
 		}catch(NumberFormatException e){
-			Communicator.getInstance().handleError("parseTimeFromTimerString error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "parseTimeFromTimerString error: " + e.getMessage());
 			return 0L;
 		}
 	}
@@ -276,51 +276,50 @@ public class TimerInfo extends TimerTask{
 				return String.format("%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft);
 			}
 		}catch(NumberFormatException e){
-			Communicator.getInstance().handleError("parseTimeStringFromTime error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "parseTimeStringFromTime error: " + e.getMessage());
 			return "";
 		}
+	}
+	
+	public static long getCurrentTime(){
+		return 1000 * ((System.currentTimeMillis() + 500) / 1000);
 	}
 
 	@Override
 	public void run() {
 		
 		if(this.time == (this.timeStampEnd - this.timeStampStart)){
-			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time, true) + "!");				
+			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been set for " + parseTimeStringFromTime(this.time, true) + "!");				
 		}
 		else if(this.isTimerRepeating && this.time <= 0L){
+			
 			this.time = this.timeStampEnd - this.timeStampStart;
+			
+			this.timeStampStart = getCurrentTime();
+			this.timeStampEnd = this.timeStampStart + this.time;
+			
+			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished and set again for " + parseTimeStringFromTime(this.time, true));
+			
+			TimerInfoContainer.getInstance().saveTimers();
+		}
+		else if(!this.isTimerRepeating && this.time <= 0L){
+			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished!");
+			TimerInfoContainer.getInstance().removeTimer(this);
 		}
 		
-		this.time -= PERIOD;
 		
-		// Send message if timer...
-		if(this.time == 3600 * 1000 || // has 1 hour left
+		// Don't send message on first tick and send message if timer...
+		if(this.time != (this.timeStampEnd - this.timeStampStart) && 
+				(this.time == 3600 * 1000 || // has 1 hour left
 				this.time == 1800 * 1000 || // has 30 minutes left
 				this.time == 600 * 1000 || // has 10 minutes left
 				this.time == 300 * 1000 || // has 5 minutes left
 				this.time == 60 * 1000 || // has 1 minute left
-				this.time == 30 * 1000){ // has 30 seconds left
+				this.time == 30 * 1000)){ // has 30 seconds left
 			
-			// This is automated message, so set channel!
-			Communicator.getInstance().setChannel(this.channel);
-			Communicator.getInstance().handleOutput(this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime(this.time, true) + " left");
+			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has " + parseTimeStringFromTime(this.time, true) + " left");
 		}
-		else if(this.time <= 0L){
-			
-			String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished";
-			
-			if(!this.isTimerRepeating){
-				TimerInfoContainer.getInstance().removeTimer(this);
-			}else{
-				msg += " and set again for " + parseTimeStringFromTime(this.timeStampEnd - this.timeStampStart, true);
-			}
-			
-			msg += "!";
-
-			// This is automated message, so set channel!
-			Communicator.getInstance().setChannel(this.channel);
-			Communicator.getInstance().handleOutput(msg);
-		}
+		this.time -= PERIOD;
 	}
 
 }
