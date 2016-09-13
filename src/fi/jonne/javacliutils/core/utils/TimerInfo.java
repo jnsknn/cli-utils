@@ -6,7 +6,6 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import fi.jonne.javacliutils.core.Communicator;
-import fi.jonne.javacliutils.core.ECommands;
 import fi.jonne.javacliutils.settings.Settings;
 
 public class TimerInfo extends TimerTask{
