@@ -21,8 +21,8 @@ public class TimerInfo extends TimerTask{
 	}};
 	
 	public String name = "timer";
-	public String owner = Settings.DEFAULT_SENDER;
-	public String channel = Settings.DEFAULT_CHANNEL;
+	public String owner = Settings.currentLocalSender;
+	public String channel = Settings.LOCAL_CHANNEL;
 	public long timeStampStart;
 	public long timeStampEnd;
 	public long time;
@@ -218,7 +218,7 @@ public class TimerInfo extends TimerTask{
 			
 			return parsedTimeLong;
 		}catch(NumberFormatException e){
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "parseTimeFromTimerString error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "parseTimeFromTimerString error: " + e.getMessage());
 			return 0L;
 		}
 	}
@@ -276,7 +276,7 @@ public class TimerInfo extends TimerTask{
 				return String.format("%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft);
 			}
 		}catch(NumberFormatException e){
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "parseTimeStringFromTime error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "parseTimeStringFromTime error: " + e.getMessage());
 			return "";
 		}
 	}

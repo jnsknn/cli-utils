@@ -3,6 +3,7 @@ package fi.jonne.javacliutils.core.utils;
 import org.jibble.pircbot.PircBot;
 
 import fi.jonne.javacliutils.core.Communicator;
+import fi.jonne.javacliutils.settings.Settings;
 
 public class IRCBot extends PircBot{
 	
@@ -18,7 +19,8 @@ public class IRCBot extends PircBot{
 	}
 	
 	public void onDisconnect(){
-		System.out.println("IRCBot disconnected!");
+		Settings.currentLocalSender = Settings.LOCAL_SENDER;
+		Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRCBot disconnected!");
 		getInstance().dispose();
 		instance = null;
 	}

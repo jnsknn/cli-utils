@@ -123,31 +123,31 @@ public enum ECommands implements ICommands {
 			if(!IRCBot.getInstance().isConnected()){
 				
 				IRCBot.getInstance().setBotName(args[1]);
-				Settings.DEFAULT_SENDER = args[1];
+				Settings.currentLocalSender = args[1];
 				
 				try{
 					IRCBot.getInstance().setVerbose(true);
 					IRCBot.getInstance().setEncoding("UTF-8");
 					
 					Communicator.getInstance()
-					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Connecting to " + args[2] + "...");
+					.printOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Connecting to " + args[2] + "...");
 					
 					IRCBot.getInstance().connect(args[2]);
 					
 					Communicator.getInstance()
-					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
+					.printOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[OK]");
 					Communicator.getInstance()
-					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Joining channel " + args[3] + "...");
+					.printOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Joining channel " + args[3] + "...");
 					IRCBot.getInstance().joinChannel(args[3]);
 					Communicator.getInstance()
-					.printOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
+					.printOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[OK]");
 					
 					if(IRCBot.getInstance().isConnected()){
 						IRCBot.getInstance().setVerbose(false);
 					}
 					
 				}catch(Exception e){
-					Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "IRC ERROR: " + e.getMessage());
+					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRC ERROR: " + e.getMessage());
 				}
 			}
 		}

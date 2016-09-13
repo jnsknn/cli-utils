@@ -59,7 +59,7 @@ public class Communicator {
 					handleOutput(channel, sender, ECommands.IRC.getInputStringFromArgs(args));					
 				}
 			}catch(Exception e){
-				handleError(Settings.DEFAULT_SENDER, Settings.DEFAULT_CHANNEL, "handleInput() error: " + e.getMessage());
+				handleError(Settings.currentLocalSender, Settings.LOCAL_CHANNEL, "handleInput() error: " + e.getMessage());
 			}
 		}
 		else if(inputStringArr.length > 1 && input.split(":")[1].trim().substring(0, 1).equalsIgnoreCase("?")){

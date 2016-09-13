@@ -17,7 +17,7 @@ public class JavaCLIUtilsMain {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		while(true){
-			Communicator.getInstance().handleInput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, br.readLine());
+			Communicator.getInstance().handleInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, br.readLine());
 		}
 		
 	}

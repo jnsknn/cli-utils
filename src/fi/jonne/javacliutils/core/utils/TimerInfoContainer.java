@@ -100,13 +100,13 @@ public class TimerInfoContainer {
 			file.flush();
 			file.close();
 		}catch(IOException e){
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "saveTimers error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "saveTimers error: " + e.getMessage());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void initializeTimers(){
-		Communicator.getInstance().handleOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Initializing timers...");
+		Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Initializing timers...");
 		JSONParser parser = new JSONParser();
 		
 		try {
@@ -132,19 +132,19 @@ public class TimerInfoContainer {
 				
 				nextId = id;
 			}
-			Communicator.getInstance().handleOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
+			Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[OK]");
 		}catch (FileNotFoundException e) {
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "initializeTimers error: " + e.getMessage());
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Writing timerinfos.json file to JavaCLIUtils root folder...");
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "initializeTimers error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Writing timerinfos.json file to JavaCLIUtils root folder...");
 			saveTimers();
-			Communicator.getInstance().handleOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
+			Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[OK]");
 		}catch (IOException e) {
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "initializeTimers IO error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "initializeTimers IO error: " + e.getMessage());
 		}catch (ParseException e) {
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "initializeTimers parse error: " + e.getMessage());
-			Communicator.getInstance().handleError(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "Writing new timerinfos.json file to JavaCLIUtils root folder...");
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "initializeTimers parse error: " + e.getMessage());
+			Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Writing new timerinfos.json file to JavaCLIUtils root folder...");
 			saveTimers();
-			Communicator.getInstance().handleOutput(Settings.DEFAULT_CHANNEL, Settings.DEFAULT_SENDER, "[OK]");
+			Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[OK]");
 		}
 	}
 }
