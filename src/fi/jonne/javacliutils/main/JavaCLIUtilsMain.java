@@ -10,15 +10,23 @@ import fi.jonne.javacliutils.settings.Settings;
 
 public class JavaCLIUtilsMain {
 	
+	private static BufferedReader br;
+	
 	public static void main(String[] args) throws IOException {
 		
-		TimerInfoContainer.getInstance().initializeTimers();
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		initialize();
 		
 		while(true){
+			Communicator.getInstance().printInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender);
 			Communicator.getInstance().handleInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, br.readLine());
 		}
 		
+	}
+	
+	private static void initialize(){
+		Settings.initializeSettings();
+		TimerInfoContainer.getInstance().initializeTimers();
+		br = new BufferedReader(new InputStreamReader(System.in));
+		Communicator.getInstance().printOutput(Settings.LOCAL_CHANNEL, Settings.LOCAL_SENDER, "[READY]");
 	}
 }

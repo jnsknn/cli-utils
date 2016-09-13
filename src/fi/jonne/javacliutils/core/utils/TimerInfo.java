@@ -89,7 +89,7 @@ public class TimerInfo extends TimerTask{
 			
 			msg += "!";
 			
-			Communicator.getInstance().handleOutput(this.channel, this.owner, msg);
+			Communicator.getInstance().printOutput(this.channel, this.owner, msg);
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
 			TimerInfoContainer.getInstance().setTimer(this);
 		}
@@ -306,7 +306,7 @@ public class TimerInfo extends TimerTask{
 			
 			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished and set again for " + parseTimeStringFromTime(this.time, true));
 			
-			TimerInfoContainer.getInstance().saveTimers();
+			TimerInfoContainer.getInstance().setTimer(this);
 		}
 		else if(!this.isTimerRepeating && this.time <= 0L){
 			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished!");

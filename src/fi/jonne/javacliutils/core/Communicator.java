@@ -89,7 +89,7 @@ public class Communicator {
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		String timeStamp = sdf.format(date);
 		
-		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " | " + error);
+		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " ! " + error);
 	}
 	
 	public void printOutput(String channel, String sender, String output){
@@ -99,5 +99,14 @@ public class Communicator {
 		String timeStamp = sdf.format(date);
 		
 		System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);
+	}
+	
+	public void printInput(String channel, String sender){
+		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		String timeStamp = sdf.format(date);
+		
+		System.out.print("[" + timeStamp + "] " + channel + " " + sender + " $ ");
 	}
 }
