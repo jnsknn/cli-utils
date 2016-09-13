@@ -26,7 +26,7 @@ public class Calculator {
 	
 	public String calculate(String input){
 		try{
-			String result = String.valueOf(engine.eval(input));
+			String result = input + " = " + String.valueOf(engine.eval(input));
 		    return result;
 	    }catch(ScriptException e){
 	    	return "calculate() error: " + e.getMessage();

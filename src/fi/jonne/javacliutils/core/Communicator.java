@@ -47,7 +47,7 @@ public class Communicator {
 			if(IRCBot.getInstance().isConnected()){
 				IRCBot.getInstance().sendMessage(channel, output);
 			}else{
-				System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);			
+				System.out.println("[" + timeStamp + "] " + channel + " " + sender + " " + getIdentifier() + output);			
 			}
 		}
 	}
@@ -103,7 +103,7 @@ public class Communicator {
 
 		String timeStamp = getTimeStamp();
 		
-		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " ! " + error);
+		System.err.println("[" + timeStamp + "] " + channel + " " + sender + " " + getIdentifier() + error);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Communicator {
 		
 		String timeStamp = getTimeStamp();
 		
-		System.out.println("[" + timeStamp + "] " + channel + " " + sender + " | " + output);
+		System.out.println("[" + timeStamp + "] " + channel + " " + sender + " " + getIdentifier() + output);
 	}
 	
 	/**
@@ -122,14 +122,21 @@ public class Communicator {
 	public void printInput(){
 		
 		String timeStamp = getTimeStamp();
-
-		String identifier = IRCBot.getInstance().isConnected() ? "#" : "?";
-		System.out.print("[" + timeStamp + "] " + Settings.LOCAL_CHANNEL + " " + Settings.currentLocalSender + " " + identifier + " ");
+		System.out.print("[" + timeStamp + "] " + Settings.LOCAL_CHANNEL + " " + Settings.currentLocalSender + " " + getIdentifier());
 	}
 	
 	private String getTimeStamp(){
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		return sdf.format(date);
+	}
+	
+	/**
+	 * Returns identifier
+	 * @return "#" if IRCBot is connected
+	 * @return "?" if IRCBot is not connected
+	 * **/
+	public String getIdentifier(){
+		return IRCBot.getInstance().isConnected() ? "#" : "?";
 	}
 }

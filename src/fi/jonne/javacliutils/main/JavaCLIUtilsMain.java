@@ -18,10 +18,11 @@ public class JavaCLIUtilsMain {
 		initialize();
 		
 		while(true){
-			Communicator.getInstance().printInput();
-			if(IRCBot.getInstance().isConnected()){			
+			if(IRCBot.getInstance().isConnected()){
+				// Handle input as messages to be sent on all joined channels
 				Communicator.getInstance().sendMessage(br.readLine());
 			}else{
+				// Handle input as commands
 				Communicator.getInstance().handleInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "?" + br.readLine());
 			}
 		}
