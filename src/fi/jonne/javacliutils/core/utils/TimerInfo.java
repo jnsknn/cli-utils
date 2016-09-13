@@ -124,7 +124,21 @@ public class TimerInfo extends TimerTask{
 			
 			
 			if(this.isTimerRepeating){
-				Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
+				
+				if(this.delay <= 0L)
+					this.name = timerDelay + timerName;
+				
+				String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true);
+				
+				if(this.delay > 0L){
+					msg += " in " + parseTimeStringFromTime(this.delay, true);
+				}else{
+					msg += " starting now";
+				}
+				
+				msg += "!";
+				
+				Communicator.getInstance().handleOutput(this.channel, this.owner, msg);
 			}
 			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);
@@ -157,7 +171,21 @@ public class TimerInfo extends TimerTask{
 
 			
 			if(this.isTimerRepeating){
-				Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true) + " in " + parseTimeStringFromTime(this.delay, true) + "!");
+				
+				if(this.delay <= 0L)
+					this.name = timerDelay + timerName;
+				
+				String msg = this.owner + ", your timer [" + this.id + "] [" + this.name + "] has been scheduled to repeat every " + parseTimeStringFromTime(this.time, true);
+				
+				if(this.delay > 0L){
+					msg += " in " + parseTimeStringFromTime(this.delay, true);
+				}else{
+					msg += " starting now";
+				}
+				
+				msg += "!";
+				
+				Communicator.getInstance().handleOutput(this.channel, this.owner, msg);
 			}
 			
 			this.timer.scheduleAtFixedRate(this, this.delay, PERIOD);

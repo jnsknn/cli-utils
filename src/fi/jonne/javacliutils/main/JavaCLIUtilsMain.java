@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import fi.jonne.javacliutils.core.Communicator;
+import fi.jonne.javacliutils.core.utils.IRCBot;
 import fi.jonne.javacliutils.core.utils.TimerInfoContainer;
 import fi.jonne.javacliutils.settings.Settings;
 
@@ -17,8 +18,12 @@ public class JavaCLIUtilsMain {
 		initialize();
 		
 		while(true){
-			Communicator.getInstance().printInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender);
-			Communicator.getInstance().handleInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, br.readLine());
+			Communicator.getInstance().printInput();
+			if(IRCBot.getInstance().isConnected()){			
+				Communicator.getInstance().sendMessage(br.readLine());
+			}else{
+				Communicator.getInstance().handleInput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "?" + br.readLine());
+			}
 		}
 		
 	}

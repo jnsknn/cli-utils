@@ -20,7 +20,7 @@ public class IRCBot extends PircBot{
 	
 	public void onDisconnect(){
 		Settings.currentLocalSender = Settings.LOCAL_SENDER;
-		Communicator.getInstance().handleOutput(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRCBot disconnected!");
+		Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "[IRCBot disconnected]");
 		getInstance().dispose();
 		instance = null;
 	}
@@ -30,6 +30,13 @@ public class IRCBot extends PircBot{
 		
 		Communicator.getInstance().handleInput(channel, sender, message);
 		Communicator.getInstance().printOutput(channel, sender, message);
+	}
+	
+	public void onPrivateMessage(String sender, String login, String hostname, String message){
+		
+		Communicator.getInstance().handleInput(sender, sender, message);
+		Communicator.getInstance().printOutput("PRIVATE", sender, message);
+		
 	}
 	
 	public void setBotName(String botName){
