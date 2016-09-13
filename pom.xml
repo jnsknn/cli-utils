@@ -36,7 +36,7 @@
       <configuration>
         <archive>
           <manifest>
-            <mainClass>fi.jonne.javacliutils.main.JavaCLIUtilsMain</mainClass>
+            <mainClass>fi.jonne.javacliutils.ui.JavaCLIUtilsMain</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>
