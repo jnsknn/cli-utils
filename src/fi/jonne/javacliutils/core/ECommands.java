@@ -147,6 +147,7 @@ public enum ECommands implements ICommands {
 					}
 					
 				}catch(Exception e){
+					Settings.currentLocalSender = Settings.LOCAL_SENDER;
 					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRC ERROR: " + e.getMessage());
 				}
 			}
