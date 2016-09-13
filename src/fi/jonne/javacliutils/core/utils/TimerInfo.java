@@ -55,8 +55,15 @@ public class TimerInfo extends TimerTask{
 			// Offline time to determine how long time has passed since timer stamp end
 			long offlineTime = -this.time;
 			
-			// How many sequences of original time can fit to offline time and put time left to this time
-			this.time = offlineTime % (timerEnd - timerStart);
+			// Original time cycle
+			long cycleTime = timerEnd - timerStart;
+			
+			// How many original time cycles can fit to offline time
+			long cycleAmount = offlineTime / cycleTime;
+			
+			// Put time left to this time
+			this.time = cycleTime - (offlineTime - (cycleTime * cycleAmount));
+
 		}
 		
 		// Set timer if there is any time left
