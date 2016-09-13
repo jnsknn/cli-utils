@@ -58,10 +58,10 @@ public class TimerInfo extends TimerTask{
 			long cycleTime = timerEnd - timerStart;
 			
 			// How many original time cycles can fit to offline time
-			long cycleAmount = offlineTime / cycleTime;
+			long cycleTimes = offlineTime / cycleTime;
 			
 			// Put time left to this time
-			this.time = cycleTime - (offlineTime - (cycleTime * cycleAmount));
+			this.time = cycleTime - (offlineTime - (cycleTime * cycleTimes));
 
 		}
 		
