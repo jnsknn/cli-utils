@@ -307,7 +307,7 @@ public enum ECommands implements ICommands {
 				new TimerInfo(args[1], args[2], getInputStringFromArgs(args), sender, channel, true);
 			}
 		}
-	},
+	}, // TODO add command to shift timers!
 	HELP {
 		public boolean isCommand(String[] args){
 			if(args[0].toLowerCase().startsWith("help")){
