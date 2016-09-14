@@ -65,7 +65,7 @@ public class Communicator {
 		String inputStringArr[] = input.split(":");
 		
 		// Handle commands
-		if(input.substring(0, 1).equalsIgnoreCase("?")){
+		if(input.startsWith("?")){
 			input = input.substring(1);
 			String[] args = input.split(" ");
 			
@@ -74,7 +74,7 @@ public class Communicator {
 			
 		}
 		// Handle commands from input string starting with ":"
-		else if(inputStringArr.length > 1 && input.split(":")[1].trim().substring(0, 1).equalsIgnoreCase("?")){
+		else if(inputStringArr.length > 1 && input.split(":")[1].trim().startsWith("?")){
 			
 			input = input.split(":")[1].trim().substring(1);
 			String[] args = input.split(" ");
