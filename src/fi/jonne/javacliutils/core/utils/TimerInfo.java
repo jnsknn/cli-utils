@@ -335,12 +335,12 @@ public class TimerInfo extends TimerTask{
 			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished and set again for " + parseTimeStringFromTime(this.time, true));
 			
 			TimerInfoContainer.getInstance().setTimer(this);
-			TimerInfoSound.tone(5000, 50, 0.1);
+//			TimerInfoSound.tone(5000, 50, 0.1);
 		}
 		else if(!this.isTimerRepeating && this.time <= 0L){
 			Communicator.getInstance().handleOutput(this.channel, this.owner, this.owner + ", your timer [" + this.id + "] [" + this.name + "] has finished!");
 			TimerInfoContainer.getInstance().removeTimer(this);
-			TimerInfoSound.tone(5000, 50, 0.1);
+//			TimerInfoSound.tone(5000, 50, 0.1);
 		}
 		
 		
