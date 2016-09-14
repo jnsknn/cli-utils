@@ -1,6 +1,11 @@
 package fi.jonne.javacliutils.core;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Map;
+
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
 
 import fi.jonne.javacliutils.core.utils.Calculator;
 import fi.jonne.javacliutils.core.utils.IRCBot;
@@ -146,9 +151,18 @@ public enum ECommands implements ICommands {
 						IRCBot.getInstance().setVerbose(false);
 					}
 					
-				}catch(Exception e){
+				}catch(UnknownHostException e){
 					Settings.currentLocalSender = Settings.LOCAL_SENDER;
-					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRC ERROR: " + e.getMessage());
+					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Unknown host: " + e.getMessage());
+				} catch (NickAlreadyInUseException e) {
+					Settings.currentLocalSender = Settings.LOCAL_SENDER;
+					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "Nick already in use: " + e.getMessage());
+				} catch (IOException e) {
+					Settings.currentLocalSender = Settings.LOCAL_SENDER;
+					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IO Error: " + e.getMessage());
+				} catch (IrcException e) {
+					Settings.currentLocalSender = Settings.LOCAL_SENDER;
+					Communicator.getInstance().handleError(Settings.LOCAL_CHANNEL, Settings.currentLocalSender, "IRC Error: " + e.getMessage());
 				}
 			}
 		}
