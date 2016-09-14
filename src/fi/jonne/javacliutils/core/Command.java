@@ -21,6 +21,5 @@ public class Command {
 				return;
 			}
 		}
-		ECommands.HELP.execute(channel, sender, null);
 	}
 }
