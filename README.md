@@ -1,6 +1,8 @@
-# Java CLI Utils
+# CLI Utils
 
-Java Maven project where I try to do and learn different things with Java. The main program contains sub programs which can be executed with right commands and arguments.
+_Archived_
+
+Java Maven project for learning purposes where I try and do different things with Java. The main program contains sub programs which can be executed with right commands and arguments.
 
 # Commands
 
@@ -17,22 +19,26 @@ Arguments are separated with space.
 - ?exit disconnects irc if bot is connected to a server. Quits the main program if bot is offline
 - ?help posts link to this file
 - ?playlist shows youtube playlist from posted youtube links
-- ?clplaylist clears playlist
+- ?clrplaylist clears playlist
 
 # Examples
 
-- Input: ?calculate 1+1*(123-5.5)/43
+- Input: `?calculate 1+1*(123-5.5)/43`
+
 	- Output: 1+1*(123-5.5)/43 = 3.7325581395348837
 
-- Input: ?ufo Jonne Niskanen
+- Input: `?ufo Jonne Niskanen`
+	
 	- Output: Fynni Semropow
 
-- Input: ?irc Jbot irc.elisa.fi #CHANNELNAME
+- Input: `?irc Jbot irc.elisa.fi #CHANNELNAME`
+
 	- Output: Connecting to irc.elisa.fi...
 
 You can also speak to channel when bot is connected by typing: #CHANNELNAME hello
 
-- Input: ?timer 2h20m30s go to work
+- Input: `?timer 2h20m30s go to work`
+	
 	- Output: Your timer [go to work] has been set for 2 hours and 20 minutes and 30 seconds!
 	- Output: Your timer [go to work] has 1 hour left
 	- Output: Your timer [go to work] has 30 minutes left
@@ -43,28 +49,30 @@ You can also speak to channel when bot is connected by typing: #CHANNELNAME hell
 
 You can make timer repeating by using command ?rtimer instead of regular ?timer
 
-- Input: ?rtimer 10m 1m stand up!
+- Input: `?rtimer 10m 1m stand up!`
+
 	- Output: Your timer [1] [stand up!] has been scheduled to repeat every 10 minutes in 1 minute!
 
-- Input: ?timer
+- Input: `?timer`
+
 	- Output: >>Timer [1] [go to work] for You has 1 hour and 58 minutes and 16 seconds remaining!<<>>Timer [2] [food!] for You has 8 minutes and 34 seconds remaining!<<>>Timer [3] [check oven] for You has 59 minutes and 55 seconds remaining!<<
 		
-- Input: ?rmtimer 1
+- Input: `?rmtimer 1`
+
 	- Output: You, your timer go to work has been removed!
 
-- Input: ?help
+- Input: `?help`
+
 	- Output: https://github.com/jnsknn/java-cli-utils/blob/master/README.md
 	
 You can make playlist by posting youtube links into chat
 	
-- Input: Check this video https://www.youtube.com/watch?v=oSOd8lnGfcE this is a cool video too https://www.youtube.com/watch?v=XmLSeuJE_Ds this is awesome video https://www.youtube.com/watch?v=N4pj7RByIeA
+- Input: `Check this video https://www.youtube.com/watch?v=oSOd8lnGfcE this is a cool video too https://www.youtube.com/watch?v=XmLSeuJE_Ds this is awesome video https://www.youtube.com/watch?v=N4pj7RByIeA`
 
-- Input: ?playlist
+- Input: `?playlist`
+
 	- Output: https://www.youtube.com/watch_videos?video_ids=oSOd8lnGfcE,XmLSeuJE_Ds,N4pj7RByIeA
 	
--Input: ?clrplaylist
+-Input: `?clrplaylist`
+
 	- Output: Playlist cleared!
-
-# External dependencies
-
-- PircBot http://www.jibble.org/pircbot.php
